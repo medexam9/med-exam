@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج الامتحانات - كلية الطب البشري جامعة حمص</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        /* --- Global Styles & Variables --- */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #007bff;
+            --accent-color: #66b3ff;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --font-main: 'Cairo', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Header --- */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .main-header i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .main-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .main-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        /* --- Search Section --- */
+        .search-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2.5rem;
+        }
+
+        .search-card h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .search-options {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .search-options label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-form {
+            display: none;
+        }
+
+        .search-form.active {
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: var(--font-main);
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(102, 179, 255, 0.25);
+        }
+
+        .input-group button {
+            padding: 0.9rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Results Styling --- */
+        #resultsContainer {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .student-info-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .student-info-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-tables-container {
+            display: grid;
+            gap: 2.5rem;
+        }
+
+        .table-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .table-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        thead th {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            font-weight: 700;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        
+        .result-success { color: var(--success-color); font-weight: bold; }
+        .result-fail { color: var(--danger-color); font-weight: bold; }
+        .result-absent { color: var(--warning-color); font-weight: bold; }
+
+        .summary-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            margin-top: 2.5rem;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .summary-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .summary-data {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .summary-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .summary-item p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-item span {
+            display: block;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1.5rem;
+            border: 1px solid #f5c6cb;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* --- Footer --- */
+        .main-footer {
+            text-align: center;
+            padding: 2rem 0;
+            background: var(--white);
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .main-header h1 { font-size: 2rem; }
+            .main-header i { font-size: 3rem; }
+            .search-card, .table-card, .summary-card { padding: 1.5rem; }
+            .search-options { flex-direction: column; gap: 1rem; align-items: center; }
+            .input-group { flex-direction: column; }
+            .input-group input, .input-group button { width: 100%; min-width: unset; }
+            .summary-data { flex-direction: column; }
+            .summary-item span { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <i class="fas fa-university"></i>
+            <h1>كلية الطب البشري</h1>
+            <p>جامعة حمص - نتائج الامتحانات - السنة الثانية</p>
+            <p>الدورة الفصلية الأولى</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="search-card">
+                <h2><i class="fas fa-search"></i> البحث عن النتيجة</h2>
+                <div class="search-options">
+                    <label><input type="radio" name="searchType" value="id" checked> البحث بالرقم الجامعي</label>
+                    <label><input type="radio" name="searchType" value="name"> البحث بالاسم</label>
+                </div>
+
+                <form id="searchByIdForm" class="search-form active">
+                    <div class="input-group">
+                        <input type="text" id="uniIdInput" placeholder="أدخل رقمك الجامعي" required>
+                        <button type="submit"><i class="fas fa-search"></i> بحث</button>
+                    </div>
+                </form>
+
+                <form id="searchByNameForm" class="search-form">
+                    <div class="input-group">
+                        <input type="text" id="nameInput" placeholder="الاسم الثلاثي" required>
+                        <input type="text" id="fatherNameInput" placeholder="اسم الأب" required>
+                        <button type="submit"><i class="fas fa-search"></i> بحث</button>
+                    </div>
+                </form>
+            </section>
+
+            <div id="resultsContainer">
+                </div>
+        </div>
+    </main>
+    
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2026 جامعة حمص - كلية الطب البشري. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="students.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
