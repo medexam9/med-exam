@@ -65,7 +65,7 @@ const countFailedSubjects = (student) => {
             failedCount++;
         }
     });
-    return failedSubjects;
+    return failedCount;
 };
 
 // دالة تحديد تقدير المواد العملية
@@ -111,14 +111,40 @@ const getSubjectIcon = (subjectName) => {
     return 'fa-file-alt'; // أيقونة افتراضية
 };
 
-// عرض النتائج باستخدام البطاقات المنفصلة
-const displayResults = (student) => {
+// عرض معلومات الطالب فقط
+const displayStudentInfo = (student) => {
     resultsContainer.innerHTML = '';
 
     if (!student) {
         resultsContainer.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> عذرًا، لم يتم العثور على أي نتائج تطابق بحثك. يرجى التحقق من المدخلات والمحاولة مرة أخرى.</div>';
         return;
     }
+
+    resultsContainer.innerHTML = `
+        <div class="search-result-card">
+            <h3>نتائج البحث</h3>
+            <div class="student-info">
+                <p>الاسم و النسبة: <span>${student.name}</span></p>
+                <p>اسم الأب: <span>${student.fatherName}</span></p>
+                <p>الرقم الجامعي: <span>${student.uniId}</span></p>
+            </div>
+            <button class="get-grades-btn" onclick="showGrades('${student.uniId}')">
+                <i class="fas fa-eye"></i> انقر للحصول على الدرجات
+            </button>
+        </div>
+        
+        <div id="gradesContainer" class="grades-container">
+            <!-- سيتم عرض الدرجات هنا -->
+        </div>
+    `;
+};
+
+// عرض الدرجات
+const showGrades = (uniId) => {
+    const student = searchById(uniId);
+    const gradesContainer = document.getElementById('gradesContainer');
+    
+    if (!student) return;
 
     const subjectsWithPractical = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1'];
     let practicalCardsHTML = '';
@@ -254,12 +280,7 @@ const displayResults = (student) => {
     const average = calculateSemesterAverage(student);
     const failedSubjects = countFailedSubjects(student);
 
-    resultsContainer.innerHTML = `
-        <div class="student-info-card">
-            <h3>الاسم و النسبة: ${student.name} - اسم الأب: ${student.fatherName}</h3>
-            <p>الرقم الجامعي: ${student.uniId} | الرقم الامتحاني: ${student.examId}</p>
-        </div>
-
+    gradesContainer.innerHTML = `
         <div class="results-section">
             <h4 class="section-title"><i class="fas fa-flask"></i> القسم العملي</h4>
             <div class="subjects-cards-container">
@@ -290,6 +311,8 @@ const displayResults = (student) => {
             </div>
         </div>
     `;
+    
+    gradesContainer.classList.add('show');
 };
 
 // معالجات الأحداث
@@ -310,7 +333,7 @@ searchByIdForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const id = uniIdInput.value.trim();
     const student = searchById(id);
-    displayResults(student);
+    displayStudentInfo(student);
 });
 
 searchByNameForm.addEventListener('submit', (e) => {
@@ -318,5 +341,5 @@ searchByNameForm.addEventListener('submit', (e) => {
     const name = nameInput.value.trim();
     const fatherName = fatherNameInput.value.trim();
     const student = searchByName(name, fatherName);
-    displayResults(student);
+    displayStudentInfo(student);
 });
