@@ -6,6 +6,7 @@
     <title>كلية الطب البشري جامعة حمص - السنة الثانية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hacen+Tunisia&display=swap');
         
@@ -22,6 +23,8 @@
             --warning: #ffc107;
             --gold: #d4af37;
             --white: #ffffff;
+            --red: #dc3545;
+            --dark-red: #c82333;
         }
         
         * {
@@ -223,16 +226,16 @@
             margin: 0 auto;
         }
         
-        /* Enhanced News Ticker */
+        /* Enhanced News Ticker - RED */
         .news-ticker {
-            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--primary-blue) 100%);
+            background: linear-gradient(90deg, var(--red) 0%, var(--dark-red) 50%, var(--red) 100%);
             color: white;
             padding: 15px 20px;
             margin-bottom: 30px;
             border-radius: 12px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 4px 15px rgba(0, 61, 130, 0.3);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
             border: 1px solid var(--gold);
         }
         
@@ -242,7 +245,7 @@
             top: 50%;
             transform: translateY(-50%);
             background: var(--gold);
-            color: var(--primary-blue);
+            color: var(--red);
             padding: 8px 15px;
             border-radius: 20px;
             font-weight: bold;
@@ -399,6 +402,32 @@
         }
         
         .btn i {
+            margin-left: 10px;
+        }
+        
+        /* Save as Image Button */
+        .save-image-btn {
+            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .save-image-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+        
+        .save-image-btn i {
             margin-left: 10px;
         }
         
@@ -841,6 +870,7 @@
             font-weight: bold;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
         
         .table-header i {
@@ -1307,7 +1337,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Enhanced News Ticker -->
+        <!-- Enhanced News Ticker - RED -->
         <div class="news-ticker">
             <div class="news-ticker-title">📢 أهم الأخبار</div>
             <div class="news-ticker-content">
@@ -1382,9 +1412,14 @@
 
         <!-- Schedule Page -->
         <div class="page-section" id="schedulePage">
-            <div class="table-container">
+            <div class="table-container" id="scheduleTable">
                 <div class="table-header">
-                    <i class="fas fa-calendar-alt"></i> برنامج الامتحان
+                    <div>
+                        <i class="fas fa-calendar-alt"></i> برنامج الامتحان
+                    </div>
+                    <button class="save-image-btn" onclick="saveAsImage('scheduleTable')">
+                        <i class="fas fa-camera"></i> حفظ كصورة
+                    </button>
                 </div>
                 <table>
                     <thead>
@@ -1651,6 +1686,16 @@
             sidebar.classList.remove('active');
         });
 
+        // Close sidebar when clicking anywhere on the screen
+        document.addEventListener('click', (e) => {
+            // Check if sidebar is active and click is outside sidebar
+            if (sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
         searchTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabId = tab.getAttribute('data-tab');
@@ -1748,10 +1793,12 @@
             
             showLoading();
             
-            // Find students by partial name and father's name
-            const students = studentData.filter(s => 
-                s.name.includes(studentName) && s.fatherName.includes(fatherName)
-            );
+            // Find students by partial name and father's name (FIXED)
+            const students = studentData.filter(s => {
+                const nameMatch = s.name.toLowerCase().includes(studentName.toLowerCase());
+                const fatherNameMatch = s.fatherName.toLowerCase().includes(fatherName.toLowerCase());
+                return nameMatch && fatherNameMatch;
+            });
             
             setTimeout(() => {
                 if (students.length > 0) {
@@ -2051,6 +2098,38 @@
             document.getElementById('printButtonContainer').style.display = 'block';
         }
 
+        // Save as Image Function
+        function saveAsImage(elementId) {
+            const element = document.getElementById(elementId);
+            
+            showLoading();
+            
+            html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(canvas => {
+                // Convert canvas to blob
+                canvas.toBlob(function(blob) {
+                    // Create download link
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `برنامج_الامتحانات_${new Date().toLocaleDateString('ar-SA')}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    hideLoading();
+                });
+            }).catch(error => {
+                console.error('Error saving image:', error);
+                alert('حدث خطأ أثناء حفظ الصورة');
+                hideLoading();
+            });
+        }
+
         function printResults() {
             if (!currentStudentData) return;
             
@@ -2160,58 +2239,58 @@
                         .average {
                             text-align: center;
                             font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-        .footer {
-            position: absolute;
-            left: 40px;
-            bottom: 40px;
-            font-weight: bold;
-        }
-        @media print {
-            body { padding: 20px; }
-            .footer { position: fixed; }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>جامعة حمص</h1>
-        <h2>كلية الطب البشري</h2>
-        <h2>السنة الثانية</h2>
-        <h2>شؤون الطلاب</h2>
-    </div>
-    
-    <div class="student-info">
-        جدول بدرجات الطالب/ة ${student.name} ابن/بنت السيد ${student.fatherName} خلال السنة الثانية للدورة الفصلية الأولى وفق الآتي:
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>اسم المادة</th>
-                <th>درجة العملي</th>
-                <th>درجة النظري</th>
-                <th>المجموع رقماً</th>
-                <th>المجموع كتابةً</th>
-                <th>الحالة</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${tableRows}
-        </tbody>
-    </table>
-    
-    <div class="average">
-        معدل الفصل الدراسي الأول هو ${average}%
-    </div>
-    
-    <div class="footer">
-        (مكتب شؤون الطلاب)
-    </div>
-</body>
-</html>
+                            font-weight: bold;
+                            margin-bottom: 30px;
+                        }
+                        .footer {
+                            position: absolute;
+                            left: 40px;
+                            bottom: 40px;
+                            font-weight: bold;
+                        }
+                        @media print {
+                            body { padding: 20px; }
+                            .footer { position: fixed; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>جامعة حمص</h1>
+                        <h2>كلية الطب البشري</h2>
+                        <h2>السنة الثانية</h2>
+                        <h2>شؤون الطلاب</h2>
+                    </div>
+                    
+                    <div class="student-info">
+                        جدول بدرجات الطالب/ة ${student.name} ابن/بنت السيد ${student.fatherName} خلال السنة الثانية للدورة الفصلية الأولى وفق الآتي:
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم المادة</th>
+                                <th>درجة العملي</th>
+                                <th>درجة النظري</th>
+                                <th>المجموع رقماً</th>
+                                <th>المجموع كتابةً</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    
+                    <div class="average">
+                        معدل الفصل الدراسي الأول هو ${average}%
+                    </div>
+                    
+                    <div class="footer">
+                        (مكتب شؤون الطلاب)
+                    </div>
+                </body>
+                </html>
             `;
             
             // Open print window
