@@ -27,6 +27,7 @@
             --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             --font-main: 'Cairo', sans-serif;
+            --sidebar-width: 280px;
         }
 
         * {
@@ -100,9 +101,117 @@
             opacity: 0.9;
         }
 
+        /* --- Sidebar --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-menu-item {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-menu-item:hover {
+            background-color: var(--light-bg);
+        }
+
+        .sidebar-menu-item i {
+            margin-left: 0.5rem;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* --- Main Content --- */
         .main-content {
             padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* --- Page Content --- */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* --- Search Section --- */
@@ -188,6 +297,144 @@
         .input-group button:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-md);
+        }
+
+        /* --- Exam Schedule --- */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schedule-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        /* --- PDF Download --- */
+        .pdf-download-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .pdf-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Exam Notes --- */
+        .notes-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .note-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .note-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .note-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .note-content {
+            white-space: pre-line;
+            line-height: 1.7;
+        }
+
+        /* --- Important Links --- */
+        .links-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .link-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .link-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .link-text {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .link-url {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
         }
 
         /* --- Results Styling --- */
@@ -503,6 +750,10 @@
                 font-size: 0.8rem;
                 padding: 0 30px;
             }
+            
+            .sidebar {
+                width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
@@ -570,6 +821,41 @@
         </div>
     </div>
 
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3>قائمة الصفحات</h3>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#" class="sidebar-menu-item" data-page="results">
+                <i class="fas fa-search"></i> نتائج الامتحانات
+            </a>
+            <a href="#" class="sidebar-menu-item" data-page="schedule">
+                <i class="fas fa-calendar-alt"></i> برنامج الامتحان
+            </a>
+            <a href="#" class="sidebar-menu-item" data-page="distribution">
+                <i class="fas fa-users"></i> توزيع الطلاب
+            </a>
+            <a href="#" class="sidebar-menu-item" data-page="notes">
+                <i class="fas fa-sticky-note"></i> ملاحظات هامة
+            </a>
+            <a href="#" class="sidebar-menu-item" data-page="links">
+                <i class="fas fa-link"></i> روابط مهمة
+            </a>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <header class="main-header">
         <div class="container">
             <i class="fas fa-university"></i>
@@ -581,31 +867,414 @@
 
     <main class="main-content">
         <div class="container">
-            <section class="search-card">
-                <h2><i class="fas fa-search"></i> البحث عن النتيجة</h2>
-                <div class="search-options">
-                    <label><input type="radio" name="searchType" value="id" checked> البحث بالرقم الجامعي</label>
-                    <label><input type="radio" name="searchType" value="name"> البحث بالاسم</label>
-                </div>
-
-                <form id="searchByIdForm" class="search-form active">
-                    <div class="input-group">
-                        <input type="text" id="uniIdInput" placeholder="أدخل رقمك الجامعي" required>
-                        <button type="submit"><i class="fas fa-search"></i> بحث</button>
+            <!-- Results Page -->
+            <div class="page-content active" id="resultsPage">
+                <section class="search-card">
+                    <h2><i class="fas fa-search"></i> البحث عن النتيجة</h2>
+                    <div class="search-options">
+                        <label><input type="radio" name="searchType" value="id" checked> البحث بالرقم الجامعي</label>
+                        <label><input type="radio" name="searchType" value="name"> البحث بالاسم</label>
                     </div>
-                </form>
 
-                <form id="searchByNameForm" class="search-form">
-                    <div class="input-group">
-                        <input type="text" id="nameInput" placeholder="الاسم الثلاثي" required>
-                        <input type="text" id="fatherNameInput" placeholder="اسم الأب" required>
-                        <button type="submit"><i class="fas fa-search"></i> بحث</button>
-                    </div>
-                </form>
-            </section>
+                    <form id="searchByIdForm" class="search-form active">
+                        <div class="input-group">
+                            <input type="text" id="uniIdInput" placeholder="أدخل رقمك الجامعي" required>
+                            <button type="submit"><i class="fas fa-search"></i> بحث</button>
+                        </div>
+                    </form>
 
-            <div id="resultsContainer">
+                    <form id="searchByNameForm" class="search-form">
+                        <div class="input-group">
+                            <input type="text" id="nameInput" placeholder="الاسم الثلاثي" required>
+                            <input type="text" id="fatherNameInput" placeholder="اسم الأب" required>
+                            <button type="submit"><i class="fas fa-search"></i> بحث</button>
+                        </div>
+                    </form>
+                </section>
+
+                <div id="resultsContainer">
                 </div>
+            </div>
+
+            <!-- Exam Schedule Page -->
+            <div class="page-content" id="schedulePage">
+                <div class="search-card">
+                    <h2><i class="fas fa-calendar-alt"></i> برنامج الامتحان</h2>
+                    <table class="schedule-table">
+                        <thead>
+                            <tr>
+                                <th>اليوم</th>
+                                <th>التاريخ</th>
+                                <th>المادة</th>
+                                <th>الوقت</th>
+                                <th>المدة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>الثلاثاء</td>
+                                <td>2026/01/27</td>
+                                <td>كيمياء حيوية وبيولوجيا جزيئية</td>
+                                <td>10:30</td>
+                                <td>ساعتان</td>
+                            </tr>
+                            <tr>
+                                <td>الأحد</td>
+                                <td>2026/02/01</td>
+                                <td>لغة أجنبية 3</td>
+                                <td>10:30</td>
+                                <td>ساعتان</td>
+                            </tr>
+                            <tr>
+                                <td>الثلاثاء</td>
+                                <td>2026/02/03</td>
+                                <td>لغة عربية</td>
+                                <td>12:00</td>
+                                <td>ساعتان</td>
+                            </tr>
+                            <tr>
+                                <td>الأربعاء</td>
+                                <td>2026/02/11</td>
+                                <td>النسج العام</td>
+                                <td>10:30</td>
+                                <td>ساعتان</td>
+                            </tr>
+                            <tr>
+                                <td>الخميس</td>
+                                <td>2026/02/19</td>
+                                <td>علم النفس السلوكي</td>
+                                <td>10:30</td>
+                                <td>ساعتان</td>
+                            </tr>
+                            <tr>
+                                <td>الأحد</td>
+                                <td>2026/03/01</td>
+                                <td>التشريح الوصفي 1</td>
+                                <td>12:00</td>
+                                <td>ساعتان</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Student Distribution Page -->
+            <div class="page-content" id="distributionPage">
+                <div class="pdf-download-card">
+                    <h2><i class="fas fa-users"></i> توزيع الطلاب</h2>
+                    <p>انقر على الزر أدناه لتحميل ملف توزيع الطلاب</p>
+                    <button class="pdf-download-btn" id="downloadPdfBtn">
+                        <i class="fas fa-download"></i> تحميل ملف 777
+                    </button>
+                </div>
+            </div>
+
+            <!-- Exam Notes Page -->
+            <div class="page-content" id="notesPage">
+                <div class="search-card">
+                    <h2><i class="fas fa-sticky-note"></i> ملاحظات هامة لكل امتحان</h2>
+                </div>
+                
+                <div class="notes-container">
+                    <!-- Chemistry Notes -->
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div class="note-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <h3 class="note-title">مادة الكيمياء الحيوية و البيولوجيا الجزيئية</h3>
+                        </div>
+                        <div class="note-content">
+السلام عليكم ورحمة الله وبركاته
+مع اقتراب أول امتحان في هذا الفصل، نبدأ معكم بسلسلة امتحانية توضيحية  لكل ما يخص موادكم و نبدأ بمادة الكيمياء الحيوية والبيولوجيا الجزيئية من حيث الموعد والمقرر والمطلوب، حرصًا على وضوح الصورة وتنظيم الدراسة خلال الفترة القادمة.
+
+أولًا: موعد الامتحان
+📌 الامتحان مثبّت يوم الثلاثاء ٢٧ / ١ / ٢٠٢٦
+سيتم نشر توزيع الطلاب، المواعيد، والتعليمات الامتحانية لاحقًا في إعلان مستقل.
+
+ثانيًا: مقرر المادة المطلوب
+📘 المقرر المعتمد للمادة:
+(رابط المقرر (https://t.me/medicalTeam2030/22))
+
+ثالثًا: المحاضرات المطلوبة بالتفصيل
+
+🔹 المطلوب للامتحان – قسم الكيمياء الحيوية:
+
+سكريات 1
+سكريات 2
+الحموض الأمينية + الهيموغلوبين والميوغلوبين
+البروتينات
+شحوم 1
+شحوم 2
+شحوم 3
+كيمياء الأنسجة
+أنزيمات 1
+أنزيمات 2
+أنزيمات 3
+
+❌ المحاضرات المحذوفة:
+
+الماء و PH
+
+الأغشية الحيوية
+
+النكليوتيدات
+
+🔹 المطلوب للامتحان – قسم البيولوجيا الجزيئية:
+
+1.بنية الحموض النووية 
+2.تعضي الدنا وتنسخه و التعبير الجيني
+3.تخليق الدنا وتحوّره
+❌ المحاضرة الرابعة (.الرنا الصغري والنكليوتيدات) محذوفة مبدئيًا
+
+📢 في حال طرأ أي تعديل على المطلوب أو المحذوف من المحاضرات، سيتم إعلامكم به فورًا .
+
+رابعًا: مصادر الدراسة
+📚 كل ما تحتاجونه من تسجيلات المحاضرات، السلايدات، والتفريغات متوفر على قناة الفريق العلمي 
+ننصح بمتابعة القناة بشكل مستمر، لأن الفترة القادمة سيكون فيها محتوى مكثف ومفيد جدًا يخص المادة.
+
+●نصائح مهمة للدراسة (خاصة وأنه باقي أقل من أسبوعين):
+•لا تؤجلوا البدء، وابدؤوا من الآن بتنظيم المحاضرات وتقسيمها على أيام.
+
+•ركّزوا على الفهم قبل الحفظ، خصوصًا في السكريات، الشحوم، والأنزيمات.
+
+•حاولوا ربط المحاضرات ببعضها حتى تكتمل الصورة عندكم.
+
+•خصصوا وقتًا للمراجعة النهائية وعدم الاكتفاء بقراءة المحاضرة مرة واحدة.
+
+•أي نقطة غير واضحة، اسألوا عنها مباشرة ولا تتركوها تتراكم.
+                        </div>
+                    </div>
+
+                    <!-- Arabic Notes -->
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div class="note-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3 class="note-title">اللغة العربية</h3>
+                        </div>
+                        <div class="note-content">
+السلام عليكم ورحمة الله وبركاته،
+
+استكمالًا لتنظيم المواد امتحانياً، نضع بين أيديكم التفاصيل الكاملة لامتحان مادة اللغة العربية من حيث الموعد والمقرر والمباحث المطلوبة ، وذلك لتسهيل التحضير وترتيب الدراسة خلال الفترة القادمة.
+
+أولًا: موعد الامتحان
+📌 امتحان اللغة العربية مثبّت يوم الثلاثاء ٣ / ٢ / ٢٠٢٦
+سيتم لاحقًا نشر أي تعليمات امتحانية إضافية.
+
+ثانيًا: مقرر المادة  موجود على قناه الفريق
+
+📘  والمطلوب منه فقط المباحث التالية:
+
+🔹 مباحث النحو والصرف والإملاء:
+
+• جميع المباحث ما عدا الفاعل
+• و نائب الفاعل و الجار و المجرور
+
+🔹 الأخطاء الشائعة:
+
+من 1 إلى 50
+
+🔹 النصوص المختارة (المطلوب الأبيات السبعة الأولى من كل نص):
+
+نسور الفداء – زكي قنصل
+
+أمتي – عمر أبو ريشة
+
+عانقي النور – عبدالله الصالح العثيمين
+
+يا تونس الخضراء – نزار قباني
+
+سنعود – عبد الكريم الكرمي
+
+عاش الفداء – محمد عبده غانم
+
+عاشق دمشقي – نزار قباني
+
+ضفاف بردى – الأخطل الصغير
+
+●ملاحظات مهمة: 
+
+• الدورات ضرورية في هذه مادة، ولا يمكن الاستغناء عنها، خاصة لفهم طريقة الأسئلة.
+
+• التركيز على تطبيق القواعد وليس حفظها فقط، ودرّبوا أنفسكم على الأسئلة.
+
+• لا تتركوا الأخطاء الشائعة للنهاية، فهي سهلة وتحتاج مراجعة مركّزة.
+                        </div>
+                    </div>
+
+                    <!-- English Notes -->
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div class="note-icon">
+                                <i class="fas fa-language"></i>
+                            </div>
+                            <h3 class="note-title">اللغة الانكليزية</h3>
+                        </div>
+                        <div class="note-content">
+تفاصيل مادة اللغة الإنكليزية 3 من حيث المقرر والملفات المطلوبة :
+
+يوم الأحد بتاريخ 1 / 2 الساعة 10:30 وفق التوزيع 
+
+
+أولًا: 
+📘 المقرر المطلوب 
+❌ وتم حذف الوحدة 19 (The Eye) من المقرر.
+
+
+📂 ملف حلول تمارين المقرر  🔗
+
+
+• 📎 الملفات الملحقة:
+
+ملف اللواحق والبوادئ (Prefixes & Suffixes) 
+
+ملف القواعد 
+
+📌 مع التنويه أن القواعد الأساسية المأخوذة في السنوات السابقة مطلوبة أيضًا ويجب مراجعتها جيدًا.
+
+ثالثًا: النصوص
+🔹 نص الامتحان سيكون خارجيًا بالكامل.
+🔹 المطلوب نظريًا للاطلاع فقط:
+
+جميع النصوص الموجودة في المقرر
+
+بالإضافة إلى نصين قامت الدكتورة بإعطائهما خلال المحاضرة
+
+📌 الهدف من دراسة النصوص هو التمرّن على الفهم، المفردات، وطريقة الأسئلة، وليس حفظ نص محدد.
+المقررات موجودة على قناه الفريق العلمي
+                        </div>
+                    </div>
+
+                    <!-- Histology Notes -->
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div class="note-icon">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                            <h3 class="note-title">النسج العام</h3>
+                        </div>
+                        <div class="note-content">
+السلام عليكم ورحمة الله وبركاته،
+
+ضمن متابعة التنظيم الامتحاني للمواد ، نضع بين أيديكم تفاصيل مادة النسج العام من حيث المباحث المطلوبة والمحذوفة، وذلك لمساعدتكم على ترتيب الدراسة  خلال الفترة القادمة.
+
+أولاً: الامتحان مثبت يوم الأربعاء بتاريخ ١١ - ٢ -٢٠٢٦  و تنشر لاحقا بقية التفاصيل الامتحانية.
+
+ثانياً : المقرر المعتمد للمادة
+
+📘  مقرر النسج العام موجود على قناه الفريق العلمي
+
+والمطلوب المباحث التالية:
+
+🔹 مدخل إلى علم النسج
+🔹 النسيج الظهاري
+🔹 النسيج الضام
+🔹 النسج الدعامية
+🔹 النسيج العضلي
+🔹 النسيج العصبي
+🔹 النسيج الغدي
+🔹 المستقبلات
+
+●●المحذوفات ●●
+❌ النسيج الدموي
+❌ فقرة الأطوار ضمن محاضرة النسيج العظمي:
+المطلوب منها تعداد فقط دون شرح
+                        </div>
+                    </div>
+
+                    <!-- Psychology Notes -->
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div class="note-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3 class="note-title">علم النفس</h3>
+                        </div>
+                        <div class="note-content">
+السلام عليكم و رحمة الله و بركاته ،
+
+أسوةً بباقي المواد، تفاصيل مادة علم النفس السلوكي....
+
+🗓 الموعد: يوم الخميس 19 / 2
+⏰ الساعة : 10:30
+
+📚 المقرر المطلوب:
+
+🔹 أجزاء من المقرر القديم
+🔹 محاضرات إضافية من كتاب Oxford في الطب النفسي
+
+📖 المقرر القديم (علم النفس السلوكي)موجود على قناه الفريق العلمي
+
+المطلوب منه المواضيع التالية:
+
+• من البداية حتى صفحة 77 (الشخصيّة).
+
+• فصل الدافعيّة والتعلّم من صفحة 108 حتى 117 (بداية الذكاء).
+
+• فصل الذكاء: أنواع الذكاء عند غاردنر من صفحة 133 إلى 135.
+
+• فصل الذاكرة والنسيان والتعلّم من صفحة 158 إلى 179 (حتى فقرة النسيان والتعلّم).
+
+• فصل التفكير من صفحة 196 حتى نهاية المقرّر.
+
+● المحاضرات الخارجية
+
+• محاضرة علم النفس المعرفي.
+
+• محاضرة المسبّبات المرضيّة.
+
+• محاضرة الشخصيّة.
+
+• محاضرة (إريكسون – بياجيه – التعلّق).
+
+• المحاضرة الأخيرة (مواضيع متنوّعة).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Links Page -->
+            <div class="page-content" id="linksPage">
+                <div class="search-card">
+                    <h2><i class="fas fa-link"></i> قنوات و روابط مهمة</h2>
+                </div>
+                
+                <div class="links-container">
+                    <div class="link-item">
+                        <div class="link-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="link-text">موقع الكلية</div>
+                        <a href="https://homs-univ.edu.sy/med" target="_blank" class="link-url">homs-univ.edu.sy/med</a>
+                    </div>
+                    
+                    <div class="link-item">
+                        <div class="link-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="link-text">رابط الفريق العلمي</div>
+                        <a href="https://t.me/+uPBNFUgj76wyZGFk" target="_blank" class="link-url">t.me/+uPBNFUgj76wyZGFk</a>
+                    </div>
+                    
+                    <div class="link-item">
+                        <div class="link-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="link-text">قناه الفريق العلمي لمادة النسج</div>
+                        <a href="https://t.me/histology_2030" target="_blank" class="link-url">t.me/histology_2030</a>
+                    </div>
+                    
+                    <div class="link-item">
+                        <div class="link-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="link-text">قناه الفريق العلمي لمادة التشريح</div>
+                        <a href="https://t.me/+yaVncEl_kwlmNjU0" target="_blank" class="link-url">t.me/+yaVncEl_kwlmNjU0</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
     
