@@ -68,43 +68,37 @@ const countFailedSubjects = (student) => {
     return failedCount;
 };
 
-// دالة تحديد تقدير المواد العملية
-const getPracticalGrade = (score) => {
-    if (score === 0 || score === "غير موجود") {
-        return { text: 'غياب / لم يتقدم', class: 'result-absent' };
-    } else if (score >= 27) {
-        return { text: 'ممتاز', class: 'result-excellent' };
-    } else if (score >= 23) {
-        return { text: 'جيد جداً', class: 'result-very-good' };
-    } else if (score >= 18) {
-        return { text: 'متوسط', class: 'result-good' };
-    } else if (score >= 12) {
-        return { text: 'سيئ', class: 'result-poor' };
-    } else {
-        return { text: 'راسب', class: 'result-fail' };
-    }
-};
-
-// دالة تحديد تقدير المواد النظرية
+// دالة تحديد تقدير المواد النظرية (تستخدم للمجموع)
 const getTheoreticalGrade = (score) => {
     if (score === 0) {
-        return { text: 'غياب / لم يتقدم', class: 'result-absent' };
+        return { text: '-', class: '' };
     } else if (score >= 96) {
-        return { text: 'ممتاز جداً', class: 'result-excellent' };
+        return { text: 'ممتاز جداً', class: 'grade-excellent' };
     } else if (score >= 85) {
-        return { text: 'ممتاز', class: 'result-very-good' };
+        return { text: 'ممتاز', class: 'grade-very-good' };
     } else if (score >= 78) {
-        return { text: 'جيد جداً', class: 'result-good' };
+        return { text: 'جيد جداً', class: 'grade-good' };
     } else if (score >= 70) {
-        return { text: 'متوسط', class: 'result-medium' };
+        return { text: 'متوسط', class: 'grade-medium' };
     } else if (score >= 60) {
-        return { text: 'سيئ', class: 'result-poor' };
+        return { text: 'سيئ', class: 'grade-poor' };
     } else {
-        return { text: 'راسب', class: 'result-fail' };
+        return { text: 'راسب', class: 'grade-fail' };
     }
 };
 
-// عرض النتائج
+// دالة للحصول على أيقونة المادة
+const getSubjectIcon = (subjectName) => {
+    if (subjectName.includes('الكيمياء')) return 'fa-flask';
+    if (subjectName.includes('النسج')) return 'fa-microscope';
+    if (subjectName.includes('التشريح')) return 'fa-user-md';
+    if (subjectName.includes('النفس')) return 'fa-brain';
+    if (subjectName.includes('العربية')) return 'fa-book';
+    if (subjectName.includes('الانكليزية')) return 'fa-language';
+    return 'fa-file-alt'; // أيقونة افتراضية
+};
+
+// عرض النتائج باستخدام البطاقات
 const displayResults = (student) => {
     resultsContainer.innerHTML = '';
 
@@ -113,52 +107,79 @@ const displayResults = (student) => {
         return;
     }
 
-    let practicalTableHTML = '';
-    let theoreticalTableHTML = '';
     const subjectsWithPractical = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1'];
+    let subjectsCardsHTML = '';
 
-    // بناء جدول القسم العملي
-    subjectsWithPractical.forEach(subject => {
-        const score = student.scores[subject];
-        if (score) {
-            const total = score.practical;
-            const grade = getPracticalGrade(total);
-            const totalDisplay = (total === "غير موجود") ? 0 : total;
-
-            practicalTableHTML += `
-                <tr>
-                    <td>${subject}</td>
-                    <td>${total}</td>
-                    <td>${numberToWords(totalDisplay)}</td>
-                    <td class="${grade.class}">${grade.text}</td>
-                </tr>
-            `;
-        }
-    });
-
-    // بناء جدول القسم النظري
+    // بناء بطاقات المواد
     Object.keys(student.scores).forEach(subject => {
         const score = student.scores[subject];
         const practicalScore = (score.practical === "غير موجود") ? 0 : (score.practical || 0);
         const theoreticalScore = score.theoretical || 0;
         const total = practicalScore + theoreticalScore;
-        const grade = getTheoreticalGrade(total);
-        let practicalCell = `<td>${score.practical}</td>`;
+        const icon = getSubjectIcon(subject);
 
-        if (!subjectsWithPractical.includes(subject)) {
-            practicalCell = '<td>-</td>';
+        // حالة عدم صدور الدرجة
+        if (total === 0) {
+            subjectsCardsHTML += `
+                <div class="subject-card border-pending">
+                    <div class="subject-card-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="subject-card-content">
+                        <h5 class="subject-name">${subject}</h5>
+                        <p class="no-grades-message"><i class="fas fa-clock"></i> لم تصدر الدرجات بعد</p>
+                    </div>
+                </div>
+            `;
+        } else { // حالة صدور الدرجة
+            const grade = getTheoreticalGrade(total);
+            const result = total >= 60;
+            const resultText = result ? 'ناجح' : 'راسب';
+            const resultClass = result ? 'result-pass' : 'result-fail';
+            const borderClass = result ? 'border-pass' : 'border-fail';
+            
+            let practicalDisplay = '-';
+            if (subjectsWithPractical.includes(subject)) {
+                practicalDisplay = score.practical;
+            }
+
+            subjectsCardsHTML += `
+                <div class="subject-card ${borderClass}">
+                    <div class="subject-card-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="subject-card-content">
+                        <h5 class="subject-name">${subject}</h5>
+                        <div class="subject-details">
+                            <div class="detail-row">
+                                <span class="detail-label">درجة العملي:</span>
+                                <span class="detail-value">${practicalDisplay}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">درجة النظري:</span>
+                                <span class="detail-value">${theoreticalScore}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">المجموع رقماً:</span>
+                                <span class="detail-value">${total}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">المجموع كتابة:</span>
+                                <span class="detail-value">${numberToWords(total)}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">النتيجة:</span>
+                                <span class="detail-value ${resultClass}">${resultText}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">التقدير العام:</span>
+                                <span class="detail-value ${grade.class}">${grade.text}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
-
-        theoreticalTableHTML += `
-            <tr>
-                <td>${subject}</td>
-                ${practicalCell}
-                <td>${theoreticalScore}</td>
-                <td>${total}</td>
-                <td>${numberToWords(total)}</td>
-                <td class="${grade.class}">${grade.text}</td>
-            </tr>
-        `;
     });
     
     const average = calculateSemesterAverage(student);
@@ -170,46 +191,8 @@ const displayResults = (student) => {
             <p>الرقم الجامعي: ${student.uniId} | الرقم الامتحاني: ${student.examId}</p>
         </div>
 
-        <div class="results-tables-container">
-            <section class="table-card">
-                <h4><i class="fas fa-flask"></i> القسم العملي</h4>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>اسم المادة</th>
-                                <th>الدرجة رقماً</th>
-                                <th>المجموع كتابة</th>
-                                <th>التقدير</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${practicalTableHTML}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section class="table-card">
-                <h4><i class="fas fa-book-open"></i> القسم النظري</h4>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>اسم المادة</th>
-                                <th>درجة العملي</th>
-                                <th>درجة الامتحان النظري</th>
-                                <th>المجموع رقماً</th>
-                                <th>المجموع كتابة</th>
-                                <th>التقدير</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${theoreticalTableHTML}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+        <div class="subjects-cards-container">
+            ${subjectsCardsHTML}
         </div>
 
         <div class="summary-card">
