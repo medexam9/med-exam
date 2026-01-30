@@ -9,6 +9,10 @@ const fatherNameInput = document.getElementById('fatherNameInput');
 const resultsContainer = document.getElementById('resultsContainer');
 const searchTypeRadios = document.querySelectorAll('input[name="searchType"]');
 
+// قوائم المواد الثابتة لكل قسم
+const practicalSubjectsList = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1'];
+const theoreticalSubjectsList = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1', 'علم النفس السلوكي', 'اللغة العربية', 'اللغة الانكليزية 3'];
+
 // تحويل الأرقام إلى كلمات
 const numberToWords = (num) => {
     if (num === 0) return 'صفر';
@@ -146,15 +150,13 @@ const showGrades = (uniId) => {
     
     if (!student) return;
 
-    const subjectsWithPractical = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1'];
     let practicalCardsHTML = '';
     let theoreticalCardsHTML = '';
-    let hasAnyTheoreticalGrades = false;
 
-    // --- بناء بطاقات القسم العملي ---
-    subjectsWithPractical.forEach(subject => {
+    // --- بناء بطاقات القسم العملي (3 بطاقات ثابتة) ---
+    practicalSubjectsList.forEach(subject => {
         const score = student.scores[subject];
-        const practicalScore = (score.practical === "غير موجود") ? 0 : (score.practical || 0);
+        const practicalScore = (score?.practical === "غير موجود") ? 0 : (score?.practical || 0);
         const icon = getSubjectIcon(subject);
 
         if (practicalScore === 0) {
@@ -207,23 +209,16 @@ const showGrades = (uniId) => {
         }
     });
 
-    // --- بناء بطاقات القسم النظري ---
-    Object.keys(student.scores).forEach(subject => {
-        // تجاهل المواد التي لها قسم عملي فقط
-        if (subjectsWithPractical.includes(subject)) {
-            return;
-        }
-
+    // --- بناء بطاقات القسم النظري (6 بطاقات ثابتة) ---
+    theoreticalSubjectsList.forEach(subject => {
         const score = student.scores[subject];
-        const theoreticalScore = score.theoretical || 0;
-        const total = theoreticalScore; // للمواد النظرية فقط، المجموع هو درجة النظري
+        const theoreticalScore = score?.theoretical || 0;
+        const practicalScore = (score?.practical === "غير موجود") ? 0 : (score?.practical || 0);
+        const total = practicalScore + theoreticalScore;
         const icon = getSubjectIcon(subject);
 
-        if (total > 0) {
-            hasAnyTheoreticalGrades = true;
-        }
-
-        if (total === 0) {
+        // إذا كانت درجة النظري صفر، اعرض رسالة "لم تصدر النتائج بعد"
+        if (theoreticalScore === 0) {
             theoreticalCardsHTML += `
                 <div class="subject-card border-pending">
                     <div class="subject-card-icon">
@@ -231,7 +226,7 @@ const showGrades = (uniId) => {
                     </div>
                     <div class="subject-card-content">
                         <h5 class="subject-name">${subject}</h5>
-                        <p class="no-grades-message"><i class="fas fa-clock"></i> لم تصدر الدرجات بعد</p>
+                        <p class="no-grades-message"><i class="fas fa-clock"></i> لم تصدر النتائج بعد</p>
                     </div>
                 </div>
             `;
@@ -250,6 +245,10 @@ const showGrades = (uniId) => {
                     <div class="subject-card-content">
                         <h5 class="subject-name">${subject}</h5>
                         <div class="subject-details">
+                            <div class="detail-row">
+                                <span class="detail-label">درجة العملي:</span>
+                                <span class="detail-value">${practicalScore > 0 ? practicalScore : '-'}</span>
+                            </div>
                             <div class="detail-row">
                                 <span class="detail-label">درجة النظري:</span>
                                 <span class="detail-value">${theoreticalScore}</span>
@@ -288,14 +287,12 @@ const showGrades = (uniId) => {
             </div>
         </div>
 
-        ${hasAnyTheoreticalGrades ? `
         <div class="results-section">
             <h4 class="section-title"><i class="fas fa-book-open"></i> القسم النظري</h4>
             <div class="subjects-cards-container">
                 ${theoreticalCardsHTML}
             </div>
         </div>
-        ` : ''}
 
         <div class="summary-card">
             <h4><i class="fas fa-graduation-cap"></i> بطاقة الفصل الأول</h4>
@@ -342,4 +339,64 @@ searchByNameForm.addEventListener('submit', (e) => {
     const fatherName = fatherNameInput.value.trim();
     const student = searchByName(name, fatherName);
     displayStudentInfo(student);
+});
+
+// التعامل مع القائمة الجانبية
+document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarClose = document.getElementById('sidebarClose');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarMenuItems = document.querySelectorAll('.sidebar-menu-item');
+    const pageContents = document.querySelectorAll('.page-content');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+    // فتح القائمة الجانبية
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('show');
+    });
+
+    // إغلاق القائمة الجانبية
+    sidebarClose.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('show');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('show');
+    });
+
+    // التنقل بين الصفحات
+    sidebarMenuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetPage = item.getAttribute('data-page');
+            
+            // إخفاء جميع الصفحات
+            pageContents.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // إظهار الصفحة المطلوبة
+            document.getElementById(`${targetPage}Page`).classList.add('active');
+            
+            // إغلاق القائمة الجانبية
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('show');
+        });
+    });
+
+    // تحميل ملف PDF
+    downloadPdfBtn.addEventListener('click', () => {
+        // إنشاء رابط مؤقت لملف PDF
+        const link = document.createElement('a');
+        link.href = '777.pdf'; // مسار ملف PDF
+        link.download = '777.pdf'; // اسم الملف عند التحميل
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
 });
