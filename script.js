@@ -68,6 +68,42 @@ const countFailedSubjects = (student) => {
     return failedCount;
 };
 
+// دالة تحديد تقدير المواد العملية
+const getPracticalGrade = (score) => {
+    if (score === 0 || score === "غير موجود") {
+        return { text: 'غياب / لم يتقدم', class: 'result-absent' };
+    } else if (score >= 27) {
+        return { text: 'ممتاز', class: 'result-excellent' };
+    } else if (score >= 23) {
+        return { text: 'جيد جداً', class: 'result-very-good' };
+    } else if (score >= 18) {
+        return { text: 'متوسط', class: 'result-good' };
+    } else if (score >= 12) {
+        return { text: 'سيئ', class: 'result-poor' };
+    } else {
+        return { text: 'راسب', class: 'result-fail' };
+    }
+};
+
+// دالة تحديد تقدير المواد النظرية
+const getTheoreticalGrade = (score) => {
+    if (score === 0) {
+        return { text: 'غياب / لم يتقدم', class: 'result-absent' };
+    } else if (score >= 96) {
+        return { text: 'ممتاز جداً', class: 'result-excellent' };
+    } else if (score >= 85) {
+        return { text: 'ممتاز', class: 'result-very-good' };
+    } else if (score >= 78) {
+        return { text: 'جيد جداً', class: 'result-good' };
+    } else if (score >= 70) {
+        return { text: 'متوسط', class: 'result-medium' };
+    } else if (score >= 60) {
+        return { text: 'سيئ', class: 'result-poor' };
+    } else {
+        return { text: 'راسب', class: 'result-fail' };
+    }
+};
+
 // عرض النتائج
 const displayResults = (student) => {
     resultsContainer.innerHTML = '';
@@ -86,20 +122,7 @@ const displayResults = (student) => {
         const score = student.scores[subject];
         if (score) {
             const total = score.practical;
-            let resultClass = '';
-            let resultText = '';
-
-            if (total === 0 || total === "غير موجود") {
-                resultText = 'غياب / لم يتقدم';
-                resultClass = 'result-absent';
-            } else if (total >= 12) { 
-                resultText = 'ناجح';
-                resultClass = 'result-success';
-            } else {
-                resultText = 'راسب';
-                resultClass = 'result-fail';
-            }
-
+            const grade = getPracticalGrade(total);
             const totalDisplay = (total === "غير موجود") ? 0 : total;
 
             practicalTableHTML += `
@@ -107,7 +130,7 @@ const displayResults = (student) => {
                     <td>${subject}</td>
                     <td>${total}</td>
                     <td>${numberToWords(totalDisplay)}</td>
-                    <td class="${resultClass}">${resultText}</td>
+                    <td class="${grade.class}">${grade.text}</td>
                 </tr>
             `;
         }
@@ -119,23 +142,11 @@ const displayResults = (student) => {
         const practicalScore = (score.practical === "غير موجود") ? 0 : (score.practical || 0);
         const theoreticalScore = score.theoretical || 0;
         const total = practicalScore + theoreticalScore;
-        let resultClass = '';
-        let resultText = '';
+        const grade = getTheoreticalGrade(total);
         let practicalCell = `<td>${score.practical}</td>`;
 
         if (!subjectsWithPractical.includes(subject)) {
             practicalCell = '<td>-</td>';
-        }
-
-        if (total === 0) {
-            resultText = 'غياب / لم يتقدم';
-            resultClass = 'result-absent';
-        } else if (total >= 60) {
-            resultText = 'ناجح';
-            resultClass = 'result-success';
-        } else {
-            resultText = 'راسب';
-            resultClass = 'result-fail';
         }
 
         theoreticalTableHTML += `
@@ -145,7 +156,7 @@ const displayResults = (student) => {
                 <td>${theoreticalScore}</td>
                 <td>${total}</td>
                 <td>${numberToWords(total)}</td>
-                <td class="${resultClass}">${resultText}</td>
+                <td class="${grade.class}">${grade.text}</td>
             </tr>
         `;
     });
@@ -153,7 +164,6 @@ const displayResults = (student) => {
     const average = calculateSemesterAverage(student);
     const failedSubjects = countFailedSubjects(student);
 
-    // --- التعديل المطلوب هنا في طريقة العرض ---
     resultsContainer.innerHTML = `
         <div class="student-info-card">
             <h3>الاسم و النسبة: ${student.name} - اسم الأب: ${student.fatherName}</h3>
@@ -170,7 +180,7 @@ const displayResults = (student) => {
                                 <th>اسم المادة</th>
                                 <th>الدرجة رقماً</th>
                                 <th>المجموع كتابة</th>
-                                <th>النتيجة</th>
+                                <th>التقدير</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -191,7 +201,7 @@ const displayResults = (student) => {
                                 <th>درجة الامتحان النظري</th>
                                 <th>المجموع رقماً</th>
                                 <th>المجموع كتابة</th>
-                                <th>النتيجة</th>
+                                <th>التقدير</th>
                             </tr>
                         </thead>
                         <tbody>
