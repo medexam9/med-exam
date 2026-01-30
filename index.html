@@ -39,7 +39,7 @@
             font-family: var(--font-main);
             background-color: var(--light-bg);
             color: var(--text-dark);
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         .container {
@@ -218,67 +218,92 @@
         .student-info-card p {
             font-size: 0.9rem;
         }
-
-        .results-tables-container {
+        
+        /* --- Subject Cards --- */
+        .subjects-cards-container {
             display: grid;
             gap: 1.5rem;
         }
 
-        .table-card {
+        .subject-card {
             background: var(--white);
             border-radius: 15px;
             padding: 1.5rem;
             box-shadow: var(--shadow-md);
-            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            border-right: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
         }
 
-        .table-card h4 {
+        .subject-card-icon {
+            font-size: 2.5rem;
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .subject-card-content {
+            flex: 1;
+        }
+
+        .subject-name {
+            color: var(--primary-color);
             font-size: 1.2rem;
             font-weight: 700;
-            display: flex;
-            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .subject-details {
+            display: grid;
             gap: 0.7rem;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
+        .detail-label {
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
-        th, td {
-            padding: 0.8rem;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.9rem;
-        }
-
-        thead th {
-            background-color: var(--light-bg);
-            color: var(--primary-color);
+        .detail-value {
             font-weight: 700;
-            border-bottom: 2px solid var(--primary-color);
-            font-size: 0.9rem;
+            color: var(--text-dark);
         }
 
-        tbody tr:hover {
-            background-color: #f1f3f5;
+        .no-grades-message {
+            color: var(--warning-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
         }
-        
-        .result-excellent { color: #006400; font-weight: bold; }
-        .result-very-good { color: #008000; font-weight: bold; }
-        .result-good { color: #228B22; font-weight: bold; }
-        .result-medium { color: #FF8C00; font-weight: bold; }
-        .result-poor { color: #FF4500; font-weight: bold; }
-        .result-fail { color: var(--danger-color); font-weight: bold; }
-        .result-absent { color: var(--warning-color); font-weight: bold; }
+
+        /* --- Grade and Result Colors --- */
+        .grade-excellent, .result-pass { color: var(--success-color); }
+        .grade-very-good { color: #28a745; }
+        .grade-good { color: #17a2b8; }
+        .grade-medium { color: #fd7e14; }
+        .grade-poor { color: #dc3545; }
+        .grade-fail, .result-fail { color: #721c24; }
+
+        /* --- Card Border Colors --- */
+        .border-pass { border-right-color: var(--success-color); }
+        .border-fail { border-right-color: var(--danger-color); }
+        .border-pending { border-right-color: var(--warning-color); }
+
 
         .summary-card {
             background: var(--white);
@@ -367,7 +392,7 @@
                 font-size: 0.8rem;
             }
             
-            .search-card, .table-card, .summary-card { 
+            .search-card, .summary-card { 
                 padding: 1rem; 
             }
             
@@ -394,17 +419,21 @@
                 font-size: 1.5rem; 
             }
             
-            th, td {
-                padding: 0.5rem;
-                font-size: 0.8rem;
+            .subject-card {
+                padding: 1.2rem;
+                gap: 1rem;
             }
             
-            .student-info-card h3 {
-                font-size: 1.2rem;
+            .subject-card-icon {
+                font-size: 2rem;
             }
             
-            .table-card h4 {
-                font-size: 1rem;
+            .subject-name {
+                font-size: 1.1rem;
+            }
+            
+            .detail-row {
+                font-size: 0.9rem;
             }
             
             .news-ticker-item {
@@ -436,17 +465,12 @@
                 padding: 0.7rem 1.5rem;
             }
             
-            th, td {
-                padding: 0.4rem;
-                font-size: 0.7rem;
-            }
-            
             .student-info-card {
                 padding: 1rem;
             }
             
             .student-info-card h3 {
-                font-size: 1rem;
+                font-size: 1.2rem;
             }
             
             .student-info-card p {
