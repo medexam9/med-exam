@@ -5,1311 +5,845 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>كلية الطب البشري جامعة حمص - السنة الثانية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hacen+Tunisia&display=swap');
-        
         :root {
-            --primary-blue: #003d82;
-            --secondary-blue: #0056b3;
-            --light-blue: #4dabf7;
-            --lighter-blue: #a5d8ff;
-            --gray: #6c757d;
-            --light-gray: #f8f9fa;
-            --dark-gray: #343a40;
-            --success: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --gold: #d4af37;
-            --white: #ffffff;
-            --red: #dc3545;
-            --dark-red: #c82333;
+            --primary-color: #0d47a1;
+            --primary-light: #5472d3;
+            --primary-dark: #002171;
+            --secondary-color: #455a64;
+            --secondary-light: #718792;
+            --secondary-dark: #1c313a;
+            --text-on-primary: #ffffff;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --background: #f5f5f5;
+            --card-background: #ffffff;
+            --success: #4caf50;
+            --fail: #f44336;
+            --pending: #ff9800;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Hacen Tunisia', 'Tajawal', sans-serif;
+            font-family: 'Cairo', sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            color: #000;
+            background-color: var(--background);
+            color: var(--text-primary);
             line-height: 1.6;
-            min-height: 100vh;
+            transition: all 0.3s ease;
         }
-        
-        /* Loading Screen */
-        .loading-screen {
+
+        .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.98);
+            background-color: rgba(255, 255, 255, 0.9);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s, visibility 0.5s;
-        }
-        
-        .loading-screen.hidden {
             opacity: 0;
             visibility: hidden;
+            transition: all 0.3s ease;
         }
-        
-        .loader {
-            width: 70px;
-            height: 70px;
-            border: 6px solid var(--light-gray);
-            border-top: 6px solid var(--primary-blue);
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(13, 71, 161, 0.2);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
         }
-        
-        .loading-text {
-            color: var(--primary-blue);
-            font-size: 18px;
-            font-weight: 500;
-        }
-        
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
-        
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--light-blue) 100%);
-            color: white;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+        .header {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 100;
-            border-bottom: 3px solid var(--gold);
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
         }
-        
+
         .logo {
-            font-size: 26px;
-            font-weight: bold;
             display: flex;
             align-items: center;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-        
+
         .logo i {
-            margin-left: 15px;
-            font-size: 32px;
-            color: var(--gold);
+            font-size: 2rem;
+            margin-left: 0.5rem;
         }
-        
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
         .menu-toggle {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid white;
-            color: white;
-            font-size: 24px;
+            background: none;
+            border: none;
+            color: var(--text-on-primary);
+            font-size: 1.5rem;
             cursor: pointer;
-            padding: 10px 15px;
-            border-radius: 8px;
-            transition: all 0.3s;
         }
-        
-        .menu-toggle:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-        
-        /* Sidebar */
+
         .sidebar {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 320px;
+            right: -300px;
+            width: 300px;
             height: 100%;
-            background: linear-gradient(180deg, var(--white) 0%, #f8f9fa 100%);
-            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
-            transition: right 0.4s ease;
+            background-color: var(--secondary-color);
+            color: var(--text-on-primary);
+            transition: right 0.3s ease;
             z-index: 1000;
             overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .sidebar.active {
             right: 0;
         }
-        
+
         .sidebar-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            padding: 25px;
+            background-color: var(--secondary-dark);
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--gold);
         }
-        
-        .sidebar-header h3 {
-            font-size: 22px;
-            font-weight: bold;
-        }
-        
+
         .sidebar-close {
-            background: rgba(255, 255, 255, 0.2);
+            background: none;
             border: none;
-            color: white;
-            font-size: 24px;
+            color: var(--text-on-primary);
+            font-size: 1.5rem;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
         }
-        
-        .sidebar-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-        
+
         .sidebar-menu {
             list-style: none;
-            padding: 20px 0;
+            padding: 0;
         }
-        
+
         .sidebar-menu li {
-            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            padding: 15px 25px;
-            color: var(--dark-gray);
+            display: block;
+            padding: 1rem;
+            color: var(--text-on-primary);
             text-decoration: none;
-            transition: all 0.3s;
-            border-right: 3px solid transparent;
-            margin: 5px 0;
+            transition: background-color 0.3s;
         }
-        
-        .sidebar-menu a:hover {
-            background-color: rgba(0, 61, 130, 0.1);
-            color: var(--primary-blue);
-            border-right-color: var(--primary-blue);
-            transform: translateX(-5px);
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--primary-color);
         }
-        
+
         .sidebar-menu i {
-            margin-left: 15px;
-            width: 24px;
+            margin-left: 0.5rem;
+            width: 20px;
             text-align: center;
-            font-size: 18px;
         }
-        
-        /* Main Content */
-        .main-content {
-            padding: 20px;
+
+        .content {
+            padding: 1rem;
             max-width: 1200px;
             margin: 0 auto;
         }
-        
-        /* Enhanced News Ticker - RED */
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-container {
+            background-color: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .search-tab {
+            flex: 1;
+            padding: 0.75rem;
+            background-color: var(--secondary-color);
+            color: var(--text-on-primary);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .search-tab:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .search-tab:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .search-tab.active {
+            background-color: var(--primary-color);
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .student-info {
+            background-color: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .student-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .student-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .student-detail {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .student-detail span {
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .results-section {
+            margin-bottom: 2rem;
+        }
+
+        .results-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .results-section h3 i {
+            margin-left: 0.5rem;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subject-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            margin-left: 0.5rem;
+        }
+
+        .card-header h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-row:last-child {
+            border-bottom: none;
+        }
+
+        .card-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .card-value {
+            font-weight: 700;
+        }
+
+        .status-success {
+            color: var(--success);
+        }
+
+        .status-fail {
+            color: var(--fail);
+        }
+
+        .status-pending {
+            color: var(--pending);
+        }
+
+        .semester-summary {
+            background-color: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+        }
+
+        .print-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-on-primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .print-btn:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .print-btn i {
+            margin-left: 0.5rem;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-table th {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 1rem;
+            text-align: right;
+        }
+
+        .schedule-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .schedule-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .note-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .note-header {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .note-header h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .note-header h3 i {
+            margin-left: 0.5rem;
+        }
+
+        .note-header .toggle-icon {
+            transition: transform 0.3s;
+        }
+
+        .note-header.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .note-content {
+            padding: 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .note-content.active {
+            max-height: 1000px;
+        }
+
+        .note-content p {
+            margin-bottom: 1rem;
+        }
+
+        .note-content ul {
+            margin-right: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .note-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .download-btn i {
+            margin-left: 0.5rem;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .link-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .link-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
         .news-ticker {
-            background: linear-gradient(90deg, var(--red) 0%, var(--dark-red) 50%, var(--red) 100%);
-            color: white;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            border-radius: 12px;
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 0.75rem;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-            border: 1px solid var(--gold);
+            margin-bottom: 1rem;
         }
-        
-        .news-ticker-title {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--gold);
-            color: var(--red);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            z-index: 2;
-            font-size: 16px;
-            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.5);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 2px 10px rgba(212, 175, 55, 0.5); }
-            50% { box-shadow: 0 2px 20px rgba(212, 175, 55, 0.8); }
-            100% { box-shadow: 0 2px 10px rgba(212, 175, 55, 0.5); }
-        }
-        
+
         .news-ticker-content {
             display: flex;
-            animation: ticker 25s linear infinite;
-            padding-right: 200px;
-        }
-        
-        .news-item {
+            animation: ticker 30s linear infinite;
             white-space: nowrap;
-            padding: 0 30px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s;
         }
-        
-        .news-item:hover {
-            color: var(--gold);
-            transform: scale(1.05);
-        }
-        
+
         @keyframes ticker {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
-        
-        /* Page Sections */
-        .page-section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .page-section.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Enhanced Search Form */
-        .search-form {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            border: 1px solid rgba(0, 61, 130, 0.1);
-        }
-        
-        .search-tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--light-gray);
-            position: relative;
-        }
-        
-        .search-tab {
-            padding: 15px 25px;
+
+        .news-item {
+            padding: 0 2rem;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            font-weight: 500;
-            color: var(--gray);
-            position: relative;
         }
-        
-        .search-tab:hover {
-            color: var(--primary-blue);
-        }
-        
-        .search-tab.active {
-            color: var(--primary-blue);
-            border-bottom-color: var(--primary-blue);
-            background: rgba(0, 61, 130, 0.05);
-        }
-        
-        .search-tab-content {
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        
-        .search-tab-content.active {
-            display: block;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark-gray);
-            font-size: 16px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-            background: var(--white);
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-blue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 61, 130, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 61, 130, 0.3);
-            display: inline-flex;
-            align-items: center;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 61, 130, 0.4);
-        }
-        
-        .btn i {
-            margin-left: 10px;
-        }
-        
-        /* Save as Image Button */
-        .save-image-btn {
-            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            display: inline-flex;
-            align-items: center;
-            margin-right: 15px;
-        }
-        
-        .save-image-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-        }
-        
-        .save-image-btn i {
-            margin-left: 10px;
-        }
-        
-        /* Enhanced Student Search Results */
-        .student-search-results {
+
+        .news-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-top: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
-        
-        .student-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            padding: 25px;
+
+        .news-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
         }
-        
-        .student-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--light-blue) 100%);
-        }
-        
-        .student-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 61, 130, 0.2);
-            border-color: var(--primary-blue);
-        }
-        
-        .student-card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--light-gray);
-        }
-        
-        .student-card-header i {
-            font-size: 28px;
-            color: var(--primary-blue);
-            margin-left: 15px;
-            background: rgba(0, 61, 130, 0.1);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .student-card-header h3 {
-            color: var(--primary-blue);
-            font-size: 20px;
-            font-weight: bold;
-        }
-        
-        .student-info-row {
-            display: flex;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-        
-        .student-info-label {
-            font-weight: 600;
-            color: var(--gray);
-            min-width: 120px;
-            font-size: 15px;
-        }
-        
-        .student-info-value {
-            flex: 1;
-            font-size: 16px;
-            color: var(--dark-gray);
-            font-weight: 500;
-        }
-        
-        .view-details-btn {
-            width: 100%;
-            margin-top: 20px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 61, 130, 0.3);
-        }
-        
-        .view-details-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 61, 130, 0.4);
-        }
-        
-        /* Enhanced Student Info Card */
-        .student-info-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
-            border-right: 5px solid var(--primary-blue);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .student-info-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--light-blue) 50%, var(--primary-blue) 100%);
-        }
-        
-        .student-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-        }
-        
-        .info-item {
-            flex: 1;
-            min-width: 220px;
-            background: rgba(0, 61, 130, 0.05);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 61, 130, 0.1);
-        }
-        
-        .info-label {
-            font-weight: 600;
-            color: var(--gray);
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .info-value {
-            font-size: 18px;
-            color: var(--primary-blue);
-            font-weight: bold;
-        }
-        
-        /* Enhanced Result Cards */
-        .results-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .result-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            position: relative;
-        }
-        
-        .result-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 61, 130, 0.2);
-            border-color: var(--primary-blue);
-        }
-        
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            padding: 18px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card-header::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .card-header i {
-            margin-left: 15px;
-            font-size: 26px;
-            z-index: 1;
-        }
-        
-        .card-header h3 {
-            font-size: 18px;
-            font-weight: bold;
-            z-index: 1;
-        }
-        
-        .card-body {
-            padding: 25px;
-        }
-        
-        .score-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed var(--light-gray);
-            align-items: center;
-        }
-        
-        .score-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .score-label {
-            color: var(--gray);
-            font-weight: 500;
-            font-size: 15px;
-        }
-        
-        .score-value {
-            font-weight: bold;
-            font-size: 16px;
-            color: var(--dark-gray);
-        }
-        
-        .result-status {
-            text-align: center;
-            padding: 12px;
-            margin-top: 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .status-pass {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.2) 100%);
-            color: var(--success);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-        
-        .status-fail {
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.2) 100%);
-            color: var(--danger);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-        
-        .status-pending {
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.2) 100%);
-            color: var(--warning);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-        }
-        
-        /* Pending Result Card */
-        .pending-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .pending-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 61, 130, 0.2);
-            border-color: var(--primary-blue);
-        }
-        
-        .pending-icon {
-            font-size: 48px;
-            color: var(--warning);
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-        
-        .pending-subject {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--dark-gray);
-            margin-bottom: 10px;
-        }
-        
-        .pending-text {
-            color: var(--warning);
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        /* Enhanced Semester Summary */
-        .semester-summary {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid rgba(0, 61, 130, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .semester-summary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--light-blue) 50%, var(--primary-blue) 100%);
-        }
-        
-        .summary-title {
-            font-size: 22px;
-            margin-bottom: 25px;
-            color: var(--primary-blue);
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-        }
-        
-        .summary-title i {
-            margin-left: 15px;
-            font-size: 26px;
-            background: rgba(0, 61, 130, 0.1);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .summary-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-        }
-        
-        .summary-item {
-            flex: 1;
-            min-width: 220px;
-            background: linear-gradient(135deg, rgba(0, 61, 130, 0.05) 0%, rgba(0, 61, 130, 0.1) 100%);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(0, 61, 130, 0.2);
-            transition: all 0.3s;
-        }
-        
-        .summary-item:hover {
+
+        .news-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 61, 130, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        .summary-label {
-            color: var(--gray);
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 15px;
-        }
-        
-        .summary-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary-blue);
-        }
-        
-        /* Print Button */
-        .print-button-container {
-            text-align: center;
-            margin: 40px 0;
-        }
-        
-        .print-btn {
-            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            display: inline-flex;
-            align-items: center;
-        }
-        
-        .print-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-        }
-        
-        .print-btn i {
-            margin-left: 10px;
-            font-size: 20px;
-        }
-        
-        /* Tables */
-        .table-container {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin-bottom: 30px;
-            border: 1px solid rgba(0, 61, 130, 0.1);
-        }
-        
-        .table-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            padding: 20px 25px;
-            font-size: 20px;
-            font-weight: bold;
+
+        .news-image {
+            height: 150px;
+            background-color: var(--primary-light);
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
+            color: var(--text-on-primary);
         }
-        
-        .table-header i {
-            margin-left: 15px;
-            font-size: 24px;
+
+        .news-image i {
+            font-size: 3rem;
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
+
+        .news-content {
+            padding: 1rem;
         }
-        
-        th, td {
-            padding: 15px 20px;
-            text-align: right;
-            border-bottom: 1px solid var(--light-gray);
+
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
         }
-        
-        th {
-            background: rgba(0, 61, 130, 0.05);
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 16px;
+
+        .news-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
-        
-        tr:hover {
-            background: rgba(0, 61, 130, 0.03);
+
+        .news-excerpt {
+            color: var(--text-primary);
+            font-size: 0.95rem;
         }
-        
-        /* Notes Cards */
-        .notes-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .note-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .note-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 61, 130, 0.2);
-            border-color: var(--primary-blue);
-        }
-        
-        .note-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .note-header i {
-            margin-left: 15px;
-            font-size: 26px;
-        }
-        
-        .note-body {
-            padding: 25px;
-        }
-        
-        .note-preview {
-            color: var(--gray);
-            margin-bottom: 15px;
-            height: 50px;
-            overflow: hidden;
-            line-height: 1.5;
-        }
-        
-        .note-link {
-            color: var(--primary-blue);
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            transition: all 0.3s;
-        }
-        
-        .note-link:hover {
-            transform: translateX(-5px);
-        }
-        
-        .note-link i {
-            margin-left: 5px;
-        }
-        
-        /* Modal */
+
         .modal {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 2000;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            backdrop-filter: blur(5px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        
+
         .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
+            opacity: 1;
+            visibility: visible;
         }
-        
+
         .modal-content {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 20px;
-            max-width: 900px;
-            width: 100%;
-            max-height: 90vh;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
             overflow-y: auto;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 61, 130, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
         }
-        
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            padding: 25px;
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--gold);
         }
-        
-        .modal-header h3 {
-            font-size: 22px;
-            font-weight: bold;
-        }
-        
+
         .modal-close {
-            background: rgba(255, 255, 255, 0.2);
+            background: none;
             border: none;
-            color: white;
-            font-size: 24px;
+            color: var(--text-on-primary);
+            font-size: 1.5rem;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
         }
-        
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-        
+
         .modal-body {
-            padding: 30px;
-            line-height: 1.8;
+            padding: 1.5rem;
         }
-        
-        .modal-body h4 {
-            color: var(--primary-blue);
-            margin: 20px 0 15px 0;
-            font-size: 18px;
-            font-weight: bold;
+
+        .print-container {
+            display: none;
         }
-        
-        .modal-body ul, .modal-body ol {
-            margin-right: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .modal-body li {
-            margin-bottom: 8px;
-        }
-        
-        /* News Page */
-        .news-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .news-card {
-            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .news-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 61, 130, 0.2);
-            border-color: var(--primary-blue);
-        }
-        
-        .news-image {
-            height: 200px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 48px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .news-image::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-        
-        .news-content {
-            padding: 25px;
-        }
-        
-        .news-title {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--dark-gray);
-            font-weight: bold;
-        }
-        
-        .news-date {
-            color: var(--gray);
-            font-size: 14px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .news-date i {
-            margin-left: 5px;
-        }
-        
-        .news-preview {
-            color: var(--gray);
-            height: 70px;
-            overflow: hidden;
-            line-height: 1.5;
-        }
-        
-        /* Links Page */
-        .links-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-            justify-items: center;
-        }
-        
-        .link-card {
+
+        .print-header {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
+            margin-bottom: 2rem;
         }
-        
-        .link-card:hover {
-            transform: translateY(-10px);
+
+        .print-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
-        
-        .link-icon {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            border-radius: 50%;
+
+        .print-header p {
+            margin-bottom: 0.25rem;
+        }
+
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .print-table th,
+        .print-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: right;
+        }
+
+        .print-table th {
+            background-color: #f2f2f2;
+        }
+
+        .print-footer {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 36px;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 25px rgba(0, 61, 130, 0.3);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            justify-content: space-between;
+            margin-top: 2rem;
         }
-        
-        .link-icon::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-        
-        .link-card:hover .link-icon {
-            transform: scale(1.1);
-            box-shadow: 0 15px 35px rgba(0, 61, 130, 0.4);
-        }
-        
-        .link-name {
-            font-weight: bold;
-            color: var(--dark-gray);
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-        
-        .link-card:hover .link-name {
-            color: var(--primary-blue);
-            transform: translateY(-2px);
-        }
-        
-        /* Download Button */
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
+
+        .search-result {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 61, 130, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        
-        .download-btn:hover {
+
+        .search-result:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 61, 130, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        .download-btn i {
-            margin-left: 10px;
+
+        .search-result-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
         }
-        
-        /* Print Styles */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            
-            .print-content, .print-content * {
-                visibility: visible;
-            }
-            
-            .print-content {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                padding: 20px;
-            }
+
+        .search-result-details {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
-        
-        /* Responsive Design */
+
         @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 1.2rem;
+            }
+
             .sidebar {
-                width: 100%;
-                right: -100%;
+                width: 250px;
+                right: -250px;
             }
-            
-            .header-content {
-                justify-content: center;
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .logo {
-                font-size: 20px;
-                text-align: center;
-            }
-            
-            .news-ticker-title {
-                position: static;
-                transform: none;
-                margin-bottom: 15px;
-                display: block;
-                text-align: center;
-                width: fit-content;
-                margin: 0 auto 15px;
-            }
-            
-            .news-ticker-content {
-                padding-right: 0;
-                animation: none;
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .results-container,
-            .notes-container,
-            .news-container,
-            .links-container {
+
+            .cards-container {
                 grid-template-columns: 1fr;
             }
-            
-            .summary-content {
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .news-container {
+                grid-template-columns: 1fr;
+            }
+
+            .semester-summary {
                 flex-direction: column;
             }
-            
-            .links-container {
-                grid-template-columns: repeat(2, 1fr);
+
+            .schedule-table {
+                font-size: 0.9rem;
             }
-            
-            .student-search-results {
-                grid-template-columns: 1fr;
+
+            .schedule-table th,
+            .schedule-table td {
+                padding: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loader"></div>
-        <div class="loading-text">جاري التحميل...</div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
     </div>
 
-    <!-- Header -->
-    <header>
+    <header class="header">
         <div class="header-content">
             <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                كلية الطب البشري جامعة حمص - السنة الثانية
+                <i class="fas fa-university"></i>
+                <h1>كلية الطب البشري جامعة حمص - السنة الثانية</h1>
             </div>
             <button class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
@@ -1317,657 +851,703 @@
         </div>
     </header>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3>القائمة الرئيسية</h3>
+            <h3>القائمة</h3>
             <button class="sidebar-close" id="sidebarClose">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="#" data-page="results"><i class="fas fa-chart-line"></i> صفحة النتائج الامتحانيّة</a></li>
-            <li><a href="#" data-page="schedule"><i class="fas fa-calendar-alt"></i> برنامج الامتحان</a></li>
-            <li><a href="#" data-page="distribution"><i class="fas fa-users"></i> توزيع الطلاب</a></li>
-            <li><a href="#" data-page="notes"><i class="fas fa-sticky-note"></i> ملاحظات هامة لكل امتحان</a></li>
-            <li><a href="#" data-page="links"><i class="fas fa-link"></i> قنوات و روابط مهمة</a></li>
-            <li><a href="#" data-page="news"><i class="fas fa-newspaper"></i> الأخبار</a></li>
+            <li><a href="#" class="menu-item active" data-page="results"><i class="fas fa-chart-bar"></i> النتائج الامتحانية</a></li>
+            <li><a href="#" class="menu-item" data-page="schedule"><i class="fas fa-calendar-alt"></i> برنامج الامتحان</a></li>
+            <li><a href="#" class="menu-item" data-page="distribution"><i class="fas fa-users"></i> توزيع الطلاب</a></li>
+            <li><a href="#" class="menu-item" data-page="notes"><i class="fas fa-sticky-note"></i> ملاحظات هامة</a></li>
+            <li><a href="#" class="menu-item" data-page="links"><i class="fas fa-link"></i> روابط مهمة</a></li>
+            <li><a href="#" class="menu-item" data-page="news"><i class="fas fa-newspaper"></i> الأخبار</a></li>
         </ul>
-    </div>
+    </aside>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Enhanced News Ticker - RED -->
-        <div class="news-ticker">
-            <div class="news-ticker-title">📢 أهم الأخبار</div>
-            <div class="news-ticker-content">
-                <div class="news-item" onclick="showNewsDetails('news1')">
-                    <i class="fas fa-star"></i> صدور نتائج مادة الكيمياء العملي
-                </div>
-                <div class="news-item" onclick="showNewsDetails('news2')">
-                    <i class="fas fa-id-card"></i> الأرقام الجامعية لطلاب الموازي
-                </div>
-            </div>
-        </div>
-
+    <main class="content">
         <!-- Results Page -->
-        <div class="page-section active" id="resultsPage">
-            <div class="search-form">
-                <div class="search-tabs">
-                    <div class="search-tab active" data-tab="id">البحث بالرقم الجامعي</div>
-                    <div class="search-tab" data-tab="name">البحث بالاسم</div>
-                </div>
-                
-                <div class="search-tab-content active" id="searchById">
-                    <div class="form-group">
-                        <label for="universityId">الرقم الجامعي</label>
-                        <input type="text" id="universityId" class="form-control" placeholder="أدخل رقمك الجامعي">
-                    </div>
-                    <button class="btn" onclick="searchById()">
-                        <i class="fas fa-search"></i> بحث
-                    </button>
-                </div>
-                
-                <div class="search-tab-content" id="searchByName">
-                    <div class="form-group">
-                        <label for="studentName">اسم الطالب (حرفين على الأقل)</label>
-                        <input type="text" id="studentName" class="form-control" placeholder="أدخل جزء من اسمك">
-                    </div>
-                    <div class="form-group">
-                        <label for="fatherName">اسم الأب (حرفين على الأقل)</label>
-                        <input type="text" id="fatherName" class="form-control" placeholder="أدخل جزء من اسم الأب">
-                    </div>
-                    <button class="btn" onclick="searchByName()">
-                        <i class="fas fa-search"></i> بحث
-                    </button>
+        <div class="page active" id="resultsPage">
+            <div class="news-ticker">
+                <div class="news-ticker-content">
+                    <div class="news-item" onclick="showNewsDetail(0)">📢 صدور نتائج مادة الكيمياء العملي</div>
+                    <div class="news-item" onclick="showNewsDetail(1)">📢 الأرقام الجامعية لطلاب الموازي</div>
                 </div>
             </div>
 
-            <div id="studentSearchResults" style="display: none;">
-                <!-- Student search results will be inserted here -->
+            <div class="search-container">
+                <div class="search-tabs">
+                    <button class="search-tab active" id="idSearchTab">البحث بالرقم الجامعي</button>
+                    <button class="search-tab" id="nameSearchTab">البحث بالاسم</button>
+                </div>
+
+                <form class="search-form" id="searchForm">
+                    <div id="idSearchForm">
+                        <div class="form-group">
+                            <label for="universityId">الرقم الجامعي</label>
+                            <input type="text" id="universityId" placeholder="أدخل الرقم الجامعي">
+                        </div>
+                        <button type="submit" class="btn">بحث</button>
+                    </div>
+
+                    <div id="nameSearchForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="studentName">اسم الطالب</label>
+                            <input type="text" id="studentName" placeholder="أدخل اسم الطالب (حرفين على الأقل)">
+                        </div>
+                        <div class="form-group">
+                            <label for="fatherName">اسم الأب</label>
+                            <input type="text" id="fatherName" placeholder="أدخل اسم الأب (حرفين على الأقل)">
+                        </div>
+                        <button type="submit" class="btn">بحث</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="searchResults" style="display: none;">
+                <!-- Search results will be displayed here -->
             </div>
 
             <div id="studentResults" style="display: none;">
-                <!-- Student info card will be inserted here -->
-            </div>
+                <div class="student-info">
+                    <h2>معلومات الطالب</h2>
+                    <div class="student-details">
+                        <div class="student-detail">
+                            <span>الاسم والنسبة:</span> <span id="studentNameDisplay"></span>
+                        </div>
+                        <div class="student-detail">
+                            <span>اسم الأب:</span> <span id="fatherNameDisplay"></span>
+                        </div>
+                        <div class="student-detail">
+                            <span>الرقم الجامعي:</span> <span id="universityIdDisplay"></span>
+                        </div>
+                    </div>
+                </div>
 
-            <div id="practicalResults" style="display: none;">
-                <!-- Practical results will be inserted here -->
-            </div>
+                <div class="results-section">
+                    <h3><i class="fas fa-flask"></i> القسم العملي</h3>
+                    <div class="cards-container" id="practicalCards">
+                        <!-- Practical subject cards will be generated here -->
+                    </div>
+                </div>
 
-            <div id="theoreticalResults" style="display: none;">
-                <!-- Theoretical results will be inserted here -->
-            </div>
+                <div class="results-section">
+                    <h3><i class="fas fa-book"></i> القسم النظري</h3>
+                    <div class="cards-container" id="theoreticalCards">
+                        <!-- Theoretical subject cards will be generated here -->
+                    </div>
+                </div>
 
-            <div id="semesterSummary" style="display: none;">
-                <!-- Semester summary will be inserted here -->
-            </div>
-
-            <div class="print-button-container" id="printButtonContainer" style="display: none;">
-                <button class="print-btn" onclick="printResults()">
-                    <i class="fas fa-print"></i> طباعة النتائج
-                </button>
+                <div class="semester-summary">
+                    <div class="summary-item">
+                        <div class="summary-value" id="semesterAverage">0%</div>
+                        <div class="summary-label">معدل الفصل الأول</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="failedSubjects">0</div>
+                        <div class="summary-label">عدد مواد الرسوب</div>
+                    </div>
+                    <button class="print-btn" id="printBtn">
+                        <i class="fas fa-print"></i> طباعة النتائج
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Schedule Page -->
-        <div class="page-section" id="schedulePage">
-            <div class="table-container" id="scheduleTable">
-                <div class="table-header">
-                    <div>
-                        <i class="fas fa-calendar-alt"></i> برنامج الامتحان
-                    </div>
-                    <button class="save-image-btn" onclick="saveAsImage('scheduleTable')">
-                        <i class="fas fa-camera"></i> حفظ كصورة
-                    </button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>اليوم</th>
-                            <th>التاريخ</th>
-                            <th>المادة</th>
-                            <th>الوقت</th>
-                            <th>المدة</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>الثلاثاء</td>
-                            <td>2026/01/27</td>
-                            <td>كيمياء حيوية وبيولوجيا جزيئية</td>
-                            <td>10:30 ساعة</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>الأحد</td>
-                            <td>2026/02/01</td>
-                            <td>لغة أجنبية 3</td>
-                            <td>10:30 ساعة</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>الثلاثاء</td>
-                            <td>2026/02/03</td>
-                            <td>لغة عربية</td>
-                            <td>12:00 ساعة</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>الأربعاء</td>
-                            <td>2026/02/11</td>
-                            <td>النسج العام</td>
-                            <td>10:30 ساعة</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>الخميس</td>
-                            <td>2026/02/19</td>
-                            <td>علم النفس السلوكي</td>
-                            <td>10:30 ساعة</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>الأحد</td>
-                            <td>2026/03/01</td>
-                            <td>التشريح الوصفي</td>
-                            <td>12:00 ساعة</td>
-                            <td>-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="page" id="schedulePage">
+            <h2>برنامج الامتحان</h2>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>اليوم</th>
+                        <th>التاريخ</th>
+                        <th>المادة</th>
+                        <th>الوقت</th>
+                        <th>المدة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>الثلاثاء</td>
+                        <td>2026/01/27</td>
+                        <td>كيمياء حيوية وبيولوجيا جزيئية</td>
+                        <td>10:30</td>
+                        <td>ساعتان</td>
+                    </tr>
+                    <tr>
+                        <td>الأحد</td>
+                        <td>2026/02/01</td>
+                        <td>لغة أجنبية 3</td>
+                        <td>10:30</td>
+                        <td>ساعتان</td>
+                    </tr>
+                    <tr>
+                        <td>الثلاثاء</td>
+                        <td>2026/02/03</td>
+                        <td>لغة عربية</td>
+                        <td>12:00</td>
+                        <td>ساعتان</td>
+                    </tr>
+                    <tr>
+                        <td>الأربعاء</td>
+                        <td>2026/02/11</td>
+                        <td>النسج العام</td>
+                        <td>10:30</td>
+                        <td>ساعتان</td>
+                    </tr>
+                    <tr>
+                        <td>الخميس</td>
+                        <td>2026/02/19</td>
+                        <td>علم النفس السلوكي</td>
+                        <td>10:30</td>
+                        <td>ساعتان</td>
+                    </tr>
+                    <tr>
+                        <td>الأحد</td>
+                        <td>2026/03/01</td>
+                        <td>التشريح الوصفي 1</td>
+                        <td>12:00</td>
+                        <td>ساعتان</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- Distribution Page -->
-        <div class="page-section" id="distributionPage">
-            <div class="table-container">
-                <div class="table-header">
-                    <i class="fas fa-users"></i> توزيع الطلاب
-                </div>
-                <div style="padding: 30px; text-align: center;">
-                    <p style="margin-bottom: 20px; font-size: 16px;">لتحميل ملف توزيع الطلاب، انقر على الزر أدناه:</p>
-                    <a href="777.pdf" class="download-btn" download>
-                        <i class="fas fa-download"></i> تحميل ملف توزيع الطلاب
-                    </a>
-                </div>
-            </div>
+        <div class="page" id="distributionPage">
+            <h2>توزيع الطلاب</h2>
+            <p>لتحميل ملف توزيع الطلاب، يرجى النقر على الرابط أدناه:</p>
+            <a href="777.pdf" class="download-btn" target="_blank">
+                <i class="fas fa-download"></i> تحميل ملف توزيع الطلاب
+            </a>
         </div>
 
         <!-- Notes Page -->
-        <div class="page-section" id="notesPage">
-            <div class="notes-container">
-                <div class="note-card" onclick="showNoteDetails('chemistry')">
-                    <div class="note-header">
-                        <i class="fas fa-flask"></i>
-                        الكيمياء الحيوية و البيولوجيا الجزيئية
-                    </div>
-                    <div class="note-body">
-                        <div class="note-preview">
-                            مع اقتراب أول امتحان في هذا الفصل، نبدأ معكم بسلسلة امتحانية توضيحية لكل ما يخص موادكم و نبدأ بمادة الكيمياء الحيوية والبيولوجيا الجزيئية...
-                        </div>
-                        <div class="note-link">
-                            انقر لفتح التفاصيل <i class="fas fa-arrow-left"></i>
-                        </div>
-                    </div>
+        <div class="page" id="notesPage">
+            <h2>ملاحظات هامة لكل امتحان</h2>
+            
+            <div class="note-card">
+                <div class="note-header" onclick="toggleNote(this)">
+                    <h3><i class="fas fa-flask"></i> الكيمياء الحيوية و البيولوجيا الجزيئية</h3>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
-                
-                <div class="note-card" onclick="showNoteDetails('arabic')">
-                    <div class="note-header">
-                        <i class="fas fa-language"></i>
-                        اللغة العربية
-                    </div>
-                    <div class="note-body">
-                        <div class="note-preview">
-                            استكمالًا لتنظيم المواد امتحانياً، نضع بين أيديكم التفاصيل الكاملة لامتحان مادة اللغة العربية من حيث الموعد والمقرر والمباحث المطلوبة...
-                        </div>
-                        <div class="note-link">
-                            انقر لفتح التفاصيل <i class="fas fa-arrow-left"></i>
-                        </div>
-                    </div>
+                <div class="note-content">
+                    <p>مع اقتراب أول امتحان في هذا الفصل، نبدأ معكم بسلسلة امتحانية توضيحية لكل ما يخص موادكم و نبدأ بمادة الكيمياء الحيوية والبيولوجيا الجزيئية من حيث الموعد والمقرر والمطلوب، حرصًا على وضوح الصورة وتنظيم الدراسة خلال الفترة القادمة.</p>
+                    <h4>أولًا: موعد الامتحان</h4>
+                    <p>📌 الامتحان مثبّت يوم الثلاثاء ٢٧ / ١ / ٢٠٢٦</p>
+                    <h4>ثانيًا: مقرر المادة المطلوب</h4>
+                    <p>📘 المقرر المعتمد للمادة: موجود على قناه الفريق العلمي</p>
+                    <h4>ثالثًا: المحاضرات المطلوبة بالتفصيل</h4>
+                    <h5>🔹 المطلوب للامتحان – قسم الكيمياء الحيوية:</h5>
+                    <ul>
+                        <li>سكريات 1</li>
+                        <li>سكريات 2</li>
+                        <li>الحموض الأمينية + الهيموغلوبين والميوغلوبين</li>
+                        <li>البروتينات</li>
+                        <li>شحوم 1</li>
+                        <li>شحوم 2</li>
+                        <li>شحوم 3</li>
+                        <li>كيمياء الأنسجة</li>
+                        <li>أنزيمات 1</li>
+                        <li>أنزيمات 2</li>
+                        <li>أنزيمات 3</li>
+                    </ul>
+                    <h5>❌ المحاضرات المحذوفة:</h5>
+                    <ul>
+                        <li>الماء و PH</li>
+                        <li>الأغشية الحيوية</li>
+                        <li>النكليوتيدات</li>
+                    </ul>
+                    <h5>🔹 المطلوب للامتحان – قسم البيولوجيا الجزيئية:</h5>
+                    <ul>
+                        <li>بنية الحموض النووية</li>
+                        <li>تعضي الدنا وتنسخه و التعبير الجيني</li>
+                        <li>تخليق الدنا وتحوّره</li>
+                    </ul>
+                    <h5>❌ المحاضرة الرابعة (.الرنا الصغري والنكليوتيدات) محذوفة مبدئيًا</h5>
+                    <h4>رابعًا: مصادر الدراسة</h4>
+                    <p>📚 كل ما تحتاجونه من تسجيلات المحاضرات، السلايدات، والتفريغات متوفر على قناة الفريق العلمي</p>
+                    <p>ننصح بمتابعة القناة بشكل مستمر، لأن الفترة القادمة سيكون فيها محتوى مكثف ومفيد جدًا يخص المادة.</p>
+                    <h4>●نصائح مهمة للدراسة (خاصة وأنه باقي أقل من أسبوعين):</h4>
+                    <ul>
+                        <li>لا تؤجلوا البدء، وابدؤوا من الآن بتنظيم المحاضرات وتقسيمها على أيام.</li>
+                        <li>ركّزوا على الفهم قبل الحفظ، خصوصًا في السكريات، الشحوم، والأنزيمات.</li>
+                        <li>حاولوا ربط المحاضرات ببعضها حتى تكتمل الصورة عندكم.</li>
+                        <li>خصصوا وقتًا للمراجعة النهائية وعدم الاكتفاء بقراءة المحاضرة مرة واحدة.</li>
+                        <li>أي نقطة غير واضحة، اسألوا عنها مباشرة ولا تتركوها تتراكم.</li>
+                    </ul>
                 </div>
-                
-                <div class="note-card" onclick="showNoteDetails('english')">
-                    <div class="note-header">
-                        <i class="fas fa-globe"></i>
-                        اللغة الانكليزية
-                    </div>
-                    <div class="note-body">
-                        <div class="note-preview">
-                            تفاصيل مادة اللغة الإنكليزية 3 من حيث المقرر والملفات المطلوبة: يوم الأحد بتاريخ 1 / 2 الساعة 10:30 وفق التوزيع...
-                        </div>
-                        <div class="note-link">
-                            انقر لفتح التفاصيل <i class="fas fa-arrow-left"></i>
-                        </div>
-                    </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-header" onclick="toggleNote(this)">
+                    <h3><i class="fas fa-language"></i> اللغة العربية</h3>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
-                
-                <div class="note-card" onclick="showNoteDetails('histology')">
-                    <div class="note-header">
-                        <i class="fas fa-microscope"></i>
-                        النسج العام
-                    </div>
-                    <div class="note-body">
-                        <div class="note-preview">
-                            ضمن متابعة التنظيم الامتحاني للمواد، نضع بين أيديكم تفاصيل مادة النسج العام من حيث المباحث المطلوبة والمحذوفة...
-                        </div>
-                        <div class="note-link">
-                            انقر لفتح التفاصيل <i class="fas fa-arrow-left"></i>
-                        </div>
-                    </div>
+                <div class="note-content">
+                    <p>استكمالًا لتنظيم المواد امتحانياً، نضع بين أيديكم التفاصيل الكاملة لامتحان مادة اللغة العربية من حيث الموعد والمقرر والمباحث المطلوبة ، وذلك لتسهيل التحضير وترتيب الدراسة خلال الفترة القادمة.</p>
+                    <h4>أولًا: موعد الامتحان</h4>
+                    <p>📌 امتحان اللغة العربية مثبّت يوم الثلاثاء ٣ / ٢ / ٢٠٢٦</p>
+                    <p>سيتم لاحقًا نشر أي تعليمات امتحانية إضافية.</p>
+                    <h4>ثانيًا: مقرر المادة موجود على قناه الفريق</h4>
+                    <p>📘 والمطلوب منه فقط المباحث التالية:</p>
+                    <h5>🔹 مباحث النحو والصرف والإملاء:</h5>
+                    <ul>
+                        <li>جميع المباحث ما عدا الفاعل</li>
+                        <li>ونائب الفاعل و الجار و المجرور</li>
+                    </ul>
+                    <h5>🔹 الأخطاء الشائعة:</h5>
+                    <p>من 1 إلى 50</p>
+                    <h5>🔹 النصوص المختارة (المطلوب الأبيات السبعة الأولى من كل نص):</h5>
+                    <ul>
+                        <li>نسور الفداء – زكي قنصل</li>
+                        <li>أمتي – عمر أبو ريشة</li>
+                        <li>عانقي النور – عبدالله الصالح العثيمين</li>
+                        <li>يا تونس الخضراء – نزار قباني</li>
+                        <li>سنعود – عبد الكريم الكرمي</li>
+                        <li>عاش الفداء – محمد عبده غانم</li>
+                        <li>عاشق دمشقي – نزار قباني</li>
+                        <li>ضفاف بردى – الأخطل الصغير</li>
+                    </ul>
+                    <h4>●ملاحظات مهمة:</h4>
+                    <ul>
+                        <li>الدورات ضرورية في هذه مادة، ولا يمكن الاستغناء عنها، خاصة لفهم طريقة الأسئلة.</li>
+                        <li>التركيز على تطبيق القواعد وليس حفظها فقط، ودرّبوا أنفسكم على الأسئلة.</li>
+                        <li>لا تتركوا الأخطاء الشائعة للنهاية، فهي سهلة وتحتاج مراجعة مركّزة.</li>
+                    </ul>
                 </div>
-                
-                <div class="note-card" onclick="showNoteDetails('psychology')">
-                    <div class="note-header">
-                        <i class="fas fa-brain"></i>
-                        علم النفس
-                    </div>
-                    <div class="note-body">
-                        <div class="note-preview">
-                            السلام عليكم و رحمة الله و بركاته، أسوةً بباقي المواد، تفاصيل مادة علم النفس السلوكي...
-                        </div>
-                        <div class="note-link">
-                            انقر لفتح التفاصيل <i class="fas fa-arrow-left"></i>
-                        </div>
-                    </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-header" onclick="toggleNote(this)">
+                    <h3><i class="fas fa-globe"></i> اللغة الانكليزية</h3>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="note-content">
+                    <p>تفاصيل مادة اللغة الإنكليزية 3 من حيث المقرر والملفات المطلوبة:</p>
+                    <p>يوم الأحد بتاريخ 1 / 2 الساعة 10:30 وفق التوزيع</p>
+                    <h4>أولًا:</h4>
+                    <p>📘 المقرر المطلوب</p>
+                    <p>❌ وتم حذف الوحدة 19 (The Eye) من المقرر.</p>
+                    <p>📂 ملف حلول تمارين المقرر 🔗</p>
+                    <h4>• 📎 الملفات الملحقة:</h4>
+                    <ul>
+                        <li>ملف اللواحق والبوادئ (Prefixes & Suffixes)</li>
+                        <li>ملف القواعد</li>
+                    </ul>
+                    <p>📌 مع التنويه أن القواعد الأساسية المأخوذة في السنوات السابقة مطلوبة أيضًا ويجب مراجعتها جيدًا.</p>
+                    <h4>ثالثًا: النصوص</h4>
+                    <p>🔹 نص الامتحان سيكون خارجيًا بالكامل.</p>
+                    <p>🔹 المطلوب نظريًا للاطلاع فقط:</p>
+                    <p>جميع النصوص الموجودة في المقرر</p>
+                    <p>بالإضافة إلى نصين قامت الدكتورة بإعطائهما خلال المحاضرة</p>
+                    <p>📌 الهدف من دراسة النصوص هو التمرّن على الفهم، المفردات، وطريقة الأسئلة، وليس حفظ نص محدد.</p>
+                    <p>المقررات موجودة على قناه الفريق العلمي</p>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-header" onclick="toggleNote(this)">
+                    <h3><i class="fas fa-microscope"></i> النسج العام</h3>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="note-content">
+                    <p>ضمن متابعة التنظيم الامتحاني للمواد، نضع بين أيديكم تفاصيل مادة النسج العام من حيث المباحث المطلوبة والمحذوفة، وذلك لمساعدتكم على ترتيب الدراسة خلال الفترة القادمة.</p>
+                    <h4>أولاً: الامتحان مثبت يوم الأربعاء بتاريخ ١١ - ٢ -٢٠٢٦ و تنشر لاحقا بقية التفاصيل الامتحانية.</h4>
+                    <h4>ثانياً : المقرر المعتمد للمادة</h4>
+                    <p>📘 مقرر النسج العام موجود على قناه الفريق العلمي</p>
+                    <p>والمطلوب المباحث التالية:</p>
+                    <ul>
+                        <li>🔹 مدخل إلى علم النسج</li>
+                        <li>🔹 النسيج الظهاري</li>
+                        <li>🔹 النسيج الضام</li>
+                        <li>🔹 النسج الدعامية</li>
+                        <li>🔹 النسيج العضلي</li>
+                        <li>🔹 النسيج العصبي</li>
+                        <li>🔹 النسيج الغدي</li>
+                        <li>🔹 المستقبلات</li>
+                    </ul>
+                    <h4>●●المحذوفات ●●</h4>
+                    <ul>
+                        <li>❌ النسيج الدموي</li>
+                        <li>❌ فقرة الأطوار ضمن محاضرة النسيج العظمي: المطلوب منها تعداد فقط دون شرح</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="note-card">
+                <div class="note-header" onclick="toggleNote(this)">
+                    <h3><i class="fas fa-brain"></i> علم النفس</h3>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="note-content">
+                    <p>السلام عليكم و رحمة الله و بركاته،</p>
+                    <p>أسوةً بباقي المواد، تفاصيل مادة علم النفس السلوكي....</p>
+                    <p>🗓 الموعد: يوم الخميس 19 / 2</p>
+                    <p>⏰ الساعة : 10:30</p>
+                    <h4>📚 المقرر المطلوب:</h4>
+                    <ul>
+                        <li>🔹 أجزاء من المقرر القديم</li>
+                        <li>🔹 محاضرات إضافية من كتاب Oxford في الطب النفسي</li>
+                    </ul>
+                    <h4>📖 المقرر القديم (علم النفس السلوكي)موجود على قناه الفريق العلمي</h4>
+                    <p>المطلوب منه المواضيع التالية:</p>
+                    <ul>
+                        <li>من البداية حتى صفحة 77 (الشخصيّة).</li>
+                        <li>فصل الدافعيّة والتعلّم من صفحة 108 حتى 117 (بداية الذكاء).</li>
+                        <li>فصل الذكاء: أنواع الذكاء عند غاردنر من صفحة 133 إلى 135.</li>
+                        <li>فصل الذاكرة والنسيان والتعلّم من صفحة 158 إلى 179 (حتى فقرة النسيان والتعلّم).</li>
+                        <li>فصل التفكير من صفحة 196 حتى نهاية المقرّر.</li>
+                    </ul>
+                    <h4>● المحاضرات الخارجية</h4>
+                    <ul>
+                        <li>محاضرة علم النفس المعرفي.</li>
+                        <li>محاضرة المسبّبات المرضيّة.</li>
+                        <li>محاضرة الشخصيّة.</li>
+                        <li>محاضرة (إريكسون – بياجيه – التعلّق).</li>
+                        <li>المحاضرة الأخيرة (مواضيع متنوّعة).</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
         <!-- Links Page -->
-        <div class="page-section" id="linksPage">
-            <div class="links-container">
-                <div class="link-card" onclick="window.open('https://homs-univ.edu.sy/med', '_blank')">
-                    <div class="link-icon">
-                        <i class="fas fa-university"></i>
-                    </div>
-                    <div class="link-name">موقع الكلية</div>
-                </div>
-                
-                <div class="link-card" onclick="window.open('https://t.me/+uPBNFUgj76wyZGFk', '_blank')">
-                    <div class="link-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="link-name">الفريق العلمي</div>
-                </div>
-                
-                <div class="link-card" onclick="window.open('https://t.me/histology_2030', '_blank')">
-                    <div class="link-icon">
-                        <i class="fas fa-microscope"></i>
-                    </div>
-                    <div class="link-name">قناة النسج</div>
-                </div>
-                
-                <div class="link-card" onclick="window.open('https://t.me/+yaVncEl_kwlmNjU0', '_blank')">
-                    <div class="link-icon">
-                        <i class="fas fa-bone"></i>
-                    </div>
-                    <div class="link-name">قناة التشريح</div>
-                </div>
+        <div class="page" id="linksPage">
+            <h2>قنوات و روابط مهمة</h2>
+            <div class="links-grid">
+                <a href="https://homs-univ.edu.sy/med" target="_blank" class="link-card">
+                    <i class="fas fa-university"></i>
+                    <h3>موقع الكلية</h3>
+                    <p>الموقع الرسمي لكلية الطب البشري جامعة حمص</p>
+                </a>
+                <a href="https://t.me/+uPBNFUgj76wyZGFk" target="_blank" class="link-card">
+                    <i class="fab fa-telegram"></i>
+                    <h3>الفريق العلمي</h3>
+                    <p>قناة الفريق العلمي للسنة الثانية</p>
+                </a>
+                <a href="https://t.me/histology_2030" target="_blank" class="link-card">
+                    <i class="fab fa-telegram"></i>
+                    <h3>قناة النسج</h3>
+                    <p>قناة الفريق العلمي لمادة النسج</p>
+                </a>
+                <a href="https://t.me/+yaVncEl_kwlmNjU0" target="_blank" class="link-card">
+                    <i class="fab fa-telegram"></i>
+                    <h3>قناة التشريح</h3>
+                    <p>قناة الفريق العلمي لمادة التشريح</p>
+                </a>
             </div>
         </div>
 
         <!-- News Page -->
-        <div class="page-section" id="newsPage">
+        <div class="page" id="newsPage">
+            <h2>الأخبار</h2>
             <div class="news-container">
-                <div class="news-card" onclick="showNewsDetails('news1')">
+                <div class="news-card" onclick="showNewsDetail(0)">
                     <div class="news-image">
-                        <i class="fas fa-flask"></i>
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
                     <div class="news-content">
                         <div class="news-title">صدور نتائج مادة الكيمياء العملي</div>
-                        <div class="news-date">
-                            <i class="fas fa-calendar"></i> 2026/01/30
-                        </div>
-                        <div class="news-preview">
-                            تم اعلان نتائج مادة الكيمياء العملي لطلاب السنة الثانية في كلية الطب البشري، للإطلاع على النتائج هنا...
-                        </div>
+                        <div class="news-date">2026/01/30</div>
+                        <div class="news-excerpt">تم اعلان نتائج مادة الكيمياء العملي لطلاب السنة الثانية في كلية الطب البشري</div>
                     </div>
                 </div>
-                
-                <div class="news-card" onclick="showNewsDetails('news2')">
+                <div class="news-card" onclick="showNewsDetail(1)">
                     <div class="news-image">
                         <i class="fas fa-id-card"></i>
                     </div>
                     <div class="news-content">
                         <div class="news-title">الأرقام الجامعية لطلاب الموازي</div>
-                        <div class="news-date">
-                            <i class="fas fa-calendar"></i> 2026/01/28
-                        </div>
-                        <div class="news-preview">
-                            قائمة الأرقام الجامعية لطلاب السنة الثانية في كلية الطب البشري، للإطلاع على الأرقام هنا...
-                        </div>
+                        <div class="news-date">2026/01/25</div>
+                        <div class="news-excerpt">قائمة الأرقام الجامعية لطلاب السنة الثانية في كلية الطب البشري</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Modal for Notes and News Details -->
-    <div class="modal" id="detailsModal">
+    <!-- Modal for News Details -->
+    <div class="modal" id="newsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">عنوان</h3>
-                <button class="modal-close" id="modalClose">
+                <h3 id="newsModalTitle">عنوان الخبر</h3>
+                <button class="modal-close" id="newsModalClose">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Content will be inserted here -->
+            <div class="modal-body" id="newsModalBody">
+                <!-- News details will be displayed here -->
             </div>
         </div>
     </div>
 
-    <script src="students.js"></script>
-    <script>
-        // Global variable to store current student data for printing
-        let currentStudentData = null;
+    <!-- Modal for Search Results -->
+    <div class="modal" id="searchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>نتائج البحث</h3>
+                <button class="modal-close" id="searchModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="searchModalBody">
+                <!-- Search results will be displayed here -->
+            </div>
+        </div>
+    </div>
 
-        // DOM Elements
+    <!-- Print Container -->
+    <div class="print-container" id="printContainer">
+        <div class="print-header">
+            <h1>جامعة حمص - كلية الطب البشري</h1>
+            <p>السنة الثانية</p>
+            <p>شؤون الطلاب</p>
+            <h2>جدول بدرجات الطالب/ة <span id="printStudentName"></span> ابن/بنت السيد <span id="printFatherName"></span> خلال السنة الثانية للدورة الفصلية الأولى وفق الآتي:</h2>
+        </div>
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th>اسم المادة</th>
+                    <th>درجة العملي</th>
+                    <th>درجة النظري</th>
+                    <th>المجموع رقماً</th>
+                    <th>المجموع كتابةً</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody">
+                <!-- Table rows will be generated here -->
+            </tbody>
+        </table>
+        <p>معدل الفصل الدراسي الأول هو <span id="printAverage"></span>%</p>
+        <div class="print-footer">
+            <div>مكتب شؤون الطلاب</div>
+            <div>التاريخ: <span id="printDate"></span></div>
+        </div>
+    </div>
+
+    <script>
+        // Student data would be loaded from students.js file
+        // For this example, we'll use a sample array
+        let studentData = [];
+        let currentStudent = null;
+
+        // Load student data
+        function loadStudentData() {
+            // In a real application, this would load from students.js
+            // For now, we'll use the provided data
+            // This is where you would connect to the actual students.js file
+            // For demonstration purposes, we'll assume the data is already loaded
+        }
+
+        // DOM elements
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
         const sidebarClose = document.getElementById('sidebarClose');
-        const loadingScreen = document.getElementById('loadingScreen');
-        const searchTabs = document.querySelectorAll('.search-tab');
-        const searchTabContents = document.querySelectorAll('.search-tab-content');
-        const pageSections = document.querySelectorAll('.page-section');
-        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
-        const modal = document.getElementById('detailsModal');
-        const modalClose = document.getElementById('modalClose');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const pages = document.querySelectorAll('.page');
+        const idSearchTab = document.getElementById('idSearchTab');
+        const nameSearchTab = document.getElementById('nameSearchTab');
+        const idSearchForm = document.getElementById('idSearchForm');
+        const nameSearchForm = document.getElementById('nameSearchForm');
+        const searchForm = document.getElementById('searchForm');
+        const searchResults = document.getElementById('searchResults');
+        const studentResults = document.getElementById('studentResults');
+        const printBtn = document.getElementById('printBtn');
+        const newsModal = document.getElementById('newsModal');
+        const newsModalClose = document.getElementById('newsModalClose');
+        const searchModal = document.getElementById('searchModal');
+        const searchModalClose = document.getElementById('searchModalClose');
+        const loadingOverlay = document.getElementById('loadingOverlay');
 
-        // Event Listeners
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.add('active');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStudentData();
+            setupEventListeners();
         });
 
-        sidebarClose.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-        });
+        // Setup event listeners
+        function setupEventListeners() {
+            // Menu toggle
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.add('active');
+            });
 
-        // Close sidebar when clicking anywhere on the screen
-        document.addEventListener('click', (e) => {
-            // Check if sidebar is active and click is outside sidebar
-            if (sidebar.classList.contains('active') && 
-                !sidebar.contains(e.target) && 
-                !menuToggle.contains(e.target)) {
+            sidebarClose.addEventListener('click', () => {
                 sidebar.classList.remove('active');
-            }
-        });
+            });
 
-        searchTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.getAttribute('data-tab');
-                
-                // Update active tab
-                searchTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Update active content
-                searchTabContents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === `searchBy${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`) {
-                        content.classList.add('active');
-                    }
+            // Menu items
+            menuItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetPage = item.getAttribute('data-page');
+                    showPage(targetPage);
+                    sidebar.classList.remove('active');
+                    
+                    // Update active menu item
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    item.classList.add('active');
                 });
             });
-        });
 
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+            // Search tabs
+            idSearchTab.addEventListener('click', () => {
+                idSearchTab.classList.add('active');
+                nameSearchTab.classList.remove('active');
+                idSearchForm.style.display = 'block';
+                nameSearchForm.style.display = 'none';
+            });
+
+            nameSearchTab.addEventListener('click', () => {
+                nameSearchTab.classList.add('active');
+                idSearchTab.classList.remove('active');
+                nameSearchForm.style.display = 'block';
+                idSearchForm.style.display = 'none';
+            });
+
+            // Search form
+            searchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const pageId = link.getAttribute('data-page');
-                
-                // Show loading screen
-                showLoading();
-                
-                // Hide all pages
-                pageSections.forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                // Show selected page
-                document.getElementById(`${pageId}Page`).classList.add('active');
-                
-                // Close sidebar
-                sidebar.classList.remove('active');
-                
-                // Hide loading screen after a short delay
-                setTimeout(hideLoading, 500);
+                performSearch();
             });
-        });
 
-        modalClose.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
+            // Print button
+            printBtn.addEventListener('click', () => {
+                printResults();
+            });
 
-        // Click anywhere to close modal
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
+            // Modal close buttons
+            newsModalClose.addEventListener('click', () => {
+                newsModal.classList.remove('active');
+            });
 
-        // Functions
-        function showLoading() {
-            loadingScreen.classList.remove('hidden');
+            searchModalClose.addEventListener('click', () => {
+                searchModal.classList.remove('active');
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === newsModal) {
+                    newsModal.classList.remove('active');
+                }
+                if (e.target === searchModal) {
+                    searchModal.classList.remove('active');
+                }
+            });
         }
 
-        function hideLoading() {
-            loadingScreen.classList.add('hidden');
+        // Show page
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId + 'Page').classList.add('active');
         }
 
-        function searchById() {
-            const universityId = document.getElementById('universityId').value.trim();
-            
-            if (!universityId) {
-                alert('الرجاء إدخال الرقم الجامعي');
-                return;
-            }
-            
+        // Perform search
+        function performSearch() {
             showLoading();
             
-            // Find student by university ID
-            const student = studentData.find(s => s.uniId === universityId);
-            
             setTimeout(() => {
-                if (student) {
-                    displayStudentResults(student);
+                if (idSearchTab.classList.contains('active')) {
+                    // Search by university ID
+                    const universityId = document.getElementById('universityId').value.trim();
+                    if (universityId) {
+                        const student = studentData.find(s => s.uniId === universityId);
+                        if (student) {
+                            displayStudentResults(student);
+                        } else {
+                            showMessage('لم يتم العثور على طالب بهذا الرقم الجامعي');
+                        }
+                    } else {
+                        showMessage('الرجاء إدخال الرقم الجامعي');
+                    }
                 } else {
-                    alert('لم يتم العثور على طالب بهذا الرقم الجامعي');
-                    hideAllResults();
+                    // Search by name
+                    const studentName = document.getElementById('studentName').value.trim();
+                    const fatherName = document.getElementById('fatherName').value.trim();
+                    
+                    if (studentName.length >= 2 && fatherName.length >= 2) {
+                        const matches = studentData.filter(s => 
+                            s.name.includes(studentName) && s.fatherName.includes(fatherName)
+                        );
+                        
+                        if (matches.length === 1) {
+                            displayStudentResults(matches[0]);
+                        } else if (matches.length > 1) {
+                            displaySearchResults(matches);
+                        } else {
+                            showMessage('لم يتم العثور على طلاب مطابقين للبحث');
+                        }
+                    } else {
+                        showMessage('الرجاء إدخال حرفين على الأقل في كل خانة');
+                    }
                 }
                 hideLoading();
             }, 500);
         }
 
-        function searchByName() {
-            const studentName = document.getElementById('studentName').value.trim();
-            const fatherName = document.getElementById('fatherName').value.trim();
-            
-            if (studentName.length < 2 || fatherName.length < 2) {
-                alert('الرجاء إدخال حرفين على الأقل في كل خانة');
-                return;
-            }
-            
-            showLoading();
-            
-            // Find students by partial name and father's name (FIXED)
-            const students = studentData.filter(s => {
-                const nameMatch = s.name.toLowerCase().includes(studentName.toLowerCase());
-                const fatherNameMatch = s.fatherName.toLowerCase().includes(fatherName.toLowerCase());
-                return nameMatch && fatherNameMatch;
-            });
-            
-            setTimeout(() => {
-                if (students.length > 0) {
-                    displayStudentSearchResults(students);
-                } else {
-                    alert('لم يتم العثور على طلاب بهذه البيانات');
-                    document.getElementById('studentSearchResults').style.display = 'none';
-                }
-                hideLoading();
-            }, 500);
-        }
-
-        function hideAllResults() {
-            document.getElementById('studentSearchResults').style.display = 'none';
-            document.getElementById('studentResults').style.display = 'none';
-            document.getElementById('practicalResults').style.display = 'none';
-            document.getElementById('theoreticalResults').style.display = 'none';
-            document.getElementById('semesterSummary').style.display = 'none';
-            document.getElementById('printButtonContainer').style.display = 'none';
-        }
-
-        function displayStudentSearchResults(students) {
-            let resultsHtml = '<div class="student-search-results">';
+        // Display search results
+        function displaySearchResults(students) {
+            const searchModalBody = document.getElementById('searchModalBody');
+            searchModalBody.innerHTML = '';
             
             students.forEach(student => {
-                resultsHtml += `
-                    <div class="student-card" onclick="displayStudentDetails('${student.uniId}')">
-                        <div class="student-card-header">
-                            <i class="fas fa-user-graduate"></i>
-                            <h3>بطاقة الطالب</h3>
-                        </div>
-                        <div class="student-info-row">
-                            <div class="student-info-label">الاسم و النسبة:</div>
-                            <div class="student-info-value">${student.name}</div>
-                        </div>
-                        <div class="student-info-row">
-                            <div class="student-info-label">اسم الأب:</div>
-                            <div class="student-info-value">${student.fatherName}</div>
-                        </div>
-                        <div class="student-info-row">
-                            <div class="student-info-label">الرقم الجامعي:</div>
-                            <div class="student-info-value">${student.uniId}</div>
-                        </div>
-                        <button class="view-details-btn">
-                            <i class="fas fa-eye"></i> انقر لرؤية التفاصيل
-                        </button>
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'search-result';
+                resultDiv.innerHTML = `
+                    <div class="search-result-name">${student.name}</div>
+                    <div class="search-result-details">
+                        اسم الأب: ${student.fatherName} | الرقم الجامعي: ${student.uniId}
                     </div>
                 `;
+                resultDiv.addEventListener('click', () => {
+                    searchModal.classList.remove('active');
+                    displayStudentResults(student);
+                });
+                searchModalBody.appendChild(resultDiv);
             });
             
-            resultsHtml += '</div>';
-            
-            document.getElementById('studentSearchResults').innerHTML = resultsHtml;
-            document.getElementById('studentSearchResults').style.display = 'block';
-            
-            // Hide other sections
-            hideAllResults();
+            searchModal.classList.add('active');
         }
 
-        function displayStudentDetails(universityId) {
-            const student = studentData.find(s => s.uniId === universityId);
-            if (student) {
-                displayStudentResults(student);
-            }
-        }
-
+        // Display student results
         function displayStudentResults(student) {
-            // Store current student data for printing
-            currentStudentData = student;
+            currentStudent = student;
             
-            // Hide search results
-            document.getElementById('studentSearchResults').style.display = 'none';
+            // Update student info
+            document.getElementById('studentNameDisplay').textContent = student.name;
+            document.getElementById('fatherNameDisplay').textContent = student.fatherName;
+            document.getElementById('universityIdDisplay').textContent = student.uniId;
             
-            // Display student info
-            const studentInfoHtml = `
-                <div class="student-info-card">
-                    <div class="student-info">
-                        <div class="info-item">
-                            <div class="info-label">اسم الطالب</div>
-                            <div class="info-value">${student.name}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">اسم الأب</div>
-                            <div class="info-value">${student.fatherName}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">الرقم الجامعي</div>
-                            <div class="info-value">${student.uniId}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">الرقم الامتحاني</div>
-                            <div class="info-value">${student.examId}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // Generate practical cards
+            const practicalCards = document.getElementById('practicalCards');
+            practicalCards.innerHTML = '';
             
-            document.getElementById('studentResults').innerHTML = studentInfoHtml;
-            document.getElementById('studentResults').style.display = 'block';
-            
-            // Display practical results
             const practicalSubjects = [
                 'الكيمياء الحيوية و البيولوجيا الجزيئية',
                 'علم النسج العام',
                 'التشريح الوصفي 1'
             ];
             
-            let practicalResultsHtml = '<h2 style="margin-bottom: 25px; color: var(--primary-blue); text-align: center; font-size: 24px;">القسم العملي</h2><div class="results-container">';
-            
             practicalSubjects.forEach(subject => {
-                const score = student.scores[subject];
-                const practicalScore = score.practical;
-                const isPending = practicalScore === 0 || practicalScore === "غير موجود";
-                
-                if (isPending) {
-                    // Show pending card
-                    practicalResultsHtml += `
-                        <div class="pending-card">
-                            <div class="pending-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="pending-subject">${subject}</div>
-                            <div class="pending-text">لم تصدر النتائج بعد</div>
-                        </div>
-                    `;
-                } else {
-                    const isPass = practicalScore >= 12;
-                    
-                    let statusClass, statusText;
-                    if (isPass) {
-                        statusClass = 'status-pass';
-                        statusText = 'ناجح';
-                    } else {
-                        statusClass = 'status-fail';
-                        statusText = 'راسب';
-                    }
-                    
-                    const subjectIcon = getSubjectIcon(subject);
-                    
-                    practicalResultsHtml += `
-                        <div class="result-card">
-                            <div class="card-header">
-                                <i class="${subjectIcon}"></i>
-                                <h3>${subject}</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="score-row">
-                                    <div class="score-label">درجة العملي</div>
-                                    <div class="score-value">${practicalScore}</div>
-                                </div>
-                                <div class="score-row">
-                                    <div class="score-label">المجموع كتابة</div>
-                                    <div class="score-value">${numberToWords(practicalScore)}</div>
-                                </div>
-                                <div class="result-status ${statusClass}">
-                                    ${statusText}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
+                const scores = student.scores[subject] || {};
+                const practicalScore = scores.practical || 0;
+                const status = getPracticalStatus(practicalScore);
+                const card = createSubjectCard(subject, 'practical', scores, status);
+                practicalCards.appendChild(card);
             });
             
-            practicalResultsHtml += '</div>';
-            document.getElementById('practicalResults').innerHTML = practicalResultsHtml;
-            document.getElementById('practicalResults').style.display = 'block';
+            // Generate theoretical cards
+            const theoreticalCards = document.getElementById('theoreticalCards');
+            theoreticalCards.innerHTML = '';
             
-            // Display theoretical results
-            const allSubjects = [
+            const theoreticalSubjects = [
                 'الكيمياء الحيوية و البيولوجيا الجزيئية',
                 'علم النسج العام',
                 'التشريح الوصفي 1',
@@ -1976,341 +1556,100 @@
                 'اللغة الانكليزية 3'
             ];
             
-            let theoreticalResultsHtml = '<h2 style="margin-bottom: 25px; color: var(--primary-blue); text-align: center; font-size: 24px;">القسم النظري</h2><div class="results-container">';
-            
-            allSubjects.forEach(subject => {
-                const score = student.scores[subject];
-                const practicalScore = score.practical || 0;
-                const theoreticalScore = score.theoretical || 0;
+            theoreticalSubjects.forEach(subject => {
+                const scores = student.scores[subject] || {};
+                const practicalScore = scores.practical || 0;
+                const theoreticalScore = scores.theoretical || 0;
                 const totalScore = practicalScore + theoreticalScore;
-                const hasPractical = practicalSubjects.includes(subject);
-                const isPending = theoreticalScore === 0;
-                
-                if (isPending) {
-                    // Show pending card
-                    theoreticalResultsHtml += `
-                        <div class="pending-card">
-                            <div class="pending-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="pending-subject">${subject}</div>
-                            <div class="pending-text">لم تصدر النتائج بعد</div>
-                        </div>
-                    `;
-                } else {
-                    const isPass = totalScore >= 60;
-                    
-                    let statusClass, statusText;
-                    if (isPass) {
-                        statusClass = 'status-pass';
-                        statusText = 'ناجح';
-                    } else {
-                        statusClass = 'status-fail';
-                        statusText = 'راسب';
-                    }
-                    
-                    const subjectIcon = getSubjectIcon(subject);
-                    
-                    theoreticalResultsHtml += `
-                        <div class="result-card">
-                            <div class="card-header">
-                                <i class="${subjectIcon}"></i>
-                                <h3>${subject}</h3>
-                            </div>
-                            <div class="card-body">
-                                ${hasPractical ? `
-                                    <div class="score-row">
-                                        <div class="score-label">درجة العملي</div>
-                                        <div class="score-value">${practicalScore === 0 || practicalScore === "غير موجود" ? 'لم تصدر بعد' : practicalScore}</div>
-                                    </div>
-                                ` : ''}
-                                <div class="score-row">
-                                    <div class="score-label">درجة الامتحان النظري</div>
-                                    <div class="score-value">${theoreticalScore}</div>
-                                </div>
-                                <div class="score-row">
-                                    <div class="score-label">المجموع رقماً</div>
-                                    <div class="score-value">${totalScore}</div>
-                                </div>
-                                <div class="score-row">
-                                    <div class="score-label">المجموع كتابة</div>
-                                    <div class="score-value">${numberToWords(totalScore)}</div>
-                                </div>
-                                <div class="result-status ${statusClass}">
-                                    ${statusText}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
+                const status = getTheoreticalStatus(totalScore, theoreticalScore);
+                const card = createSubjectCard(subject, 'theoretical', scores, status);
+                theoreticalCards.appendChild(card);
             });
             
-            theoreticalResultsHtml += '</div>';
-            document.getElementById('theoreticalResults').innerHTML = theoreticalResultsHtml;
-            document.getElementById('theoreticalResults').style.display = 'block';
+            // Calculate semester average and failed subjects
+            const { average, failedCount } = calculateSemesterStats(student);
+            document.getElementById('semesterAverage').textContent = average + '%';
+            document.getElementById('failedSubjects').textContent = failedCount;
             
-            // Calculate and display semester summary
-            let totalScore = 0;
-            let subjectCount = 0;
-            let failedSubjects = 0;
-            
-            allSubjects.forEach(subject => {
-                const score = student.scores[subject];
-                const practicalScore = score.practical || 0;
-                const theoreticalScore = score.theoretical || 0;
-                const subjectTotal = practicalScore + theoreticalScore;
-                
-                if (practicalScore !== 0 && practicalScore !== "غير موجود" && theoreticalScore !== 0) {
-                    totalScore += subjectTotal;
-                    subjectCount++;
-                    
-                    if (subjectTotal < 60) {
-                        failedSubjects++;
-                    }
-                }
-            });
-            
-            const average = subjectCount > 0 ? (totalScore / subjectCount).toFixed(2) : 0;
-            
-            const semesterSummaryHtml = `
-                <div class="semester-summary">
-                    <div class="summary-title">
-                        <i class="fas fa-chart-pie"></i>
-                        بطاقة الفصل الأول
-                    </div>
-                    <div class="summary-content">
-                        <div class="summary-item">
-                            <div class="summary-label">معدل الفصل الأول</div>
-                            <div class="summary-value">${average}%</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">عدد مواد الرسوب</div>
-                            <div class="summary-value">${failedSubjects}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('semesterSummary').innerHTML = semesterSummaryHtml;
-            document.getElementById('semesterSummary').style.display = 'block';
-            
-            // Show print button
-            document.getElementById('printButtonContainer').style.display = 'block';
+            // Show results
+            searchResults.style.display = 'none';
+            studentResults.style.display = 'block';
         }
 
-        // Save as Image Function
-        function saveAsImage(elementId) {
-            const element = document.getElementById(elementId);
+        // Create subject card
+        function createSubjectCard(subject, type, scores, status) {
+            const card = document.createElement('div');
+            card.className = 'subject-card';
             
-            showLoading();
+            const icon = getSubjectIcon(subject);
+            const practicalScore = scores.practical || 0;
+            const theoreticalScore = scores.theoretical || 0;
+            const totalScore = practicalScore + theoreticalScore;
             
-            html2canvas(element, {
-                scale: 2,
-                backgroundColor: '#ffffff',
-                logging: false
-            }).then(canvas => {
-                // Convert canvas to blob
-                canvas.toBlob(function(blob) {
-                    // Create download link
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `برنامج_الامتحانات_${new Date().toLocaleDateString('ar-SA')}.png`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    
-                    hideLoading();
-                });
-            }).catch(error => {
-                console.error('Error saving image:', error);
-                alert('حدث خطأ أثناء حفظ الصورة');
-                hideLoading();
-            });
-        }
-
-        function printResults() {
-            if (!currentStudentData) return;
-            
-            const student = currentStudentData;
-            const allSubjects = [
-                'الكيمياء الحيوية و البيولوجيا الجزيئية',
-                'علم النسج العام',
-                'التشريح الوصفي 1',
-                'علم النفس السلوكي',
-                'اللغة العربية',
-                'اللغة الانكليزية 3'
-            ];
-            
-            // Calculate average
-            let totalScore = 0;
-            let subjectCount = 0;
-            
-            allSubjects.forEach(subject => {
-                const score = student.scores[subject];
-                const practicalScore = score.practical || 0;
-                const theoreticalScore = score.theoretical || 0;
-                const subjectTotal = practicalScore + theoreticalScore;
-                
-                if (practicalScore !== 0 && practicalScore !== "غير موجود" && theoreticalScore !== 0) {
-                    totalScore += subjectTotal;
-                    subjectCount++;
-                }
-            });
-            
-            const average = subjectCount > 0 ? (totalScore / subjectCount).toFixed(2) : 0;
-            
-            // Generate table rows
-            let tableRows = '';
-            allSubjects.forEach(subject => {
-                const score = student.scores[subject];
-                const practicalScore = score.practical || 0;
-                const theoreticalScore = score.theoretical || 0;
-                const totalScore = practicalScore + theoreticalScore;
-                const hasPractical = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1'].includes(subject);
-                const isPending = theoreticalScore === 0;
-                const isPass = totalScore >= 60;
-                
-                let statusText = 'لم تصدر بعد';
-                if (!isPending) {
-                    statusText = isPass ? 'ناجح' : 'راسب';
-                }
-                
-                tableRows += `
-                    <tr>
-                        <td>${subject}</td>
-                        <td>${hasPractical ? (practicalScore === 0 || practicalScore === "غير موجود" ? '-' : practicalScore) : '-'}</td>
-                        <td>${isPending ? '-' : theoreticalScore}</td>
-                        <td>${isPending ? '-' : totalScore}</td>
-                        <td>${isPending ? '-' : numberToWords(totalScore)}</td>
-                        <td>${statusText}</td>
-                    </tr>
+            if (type === 'practical') {
+                card.innerHTML = `
+                    <div class="card-header">
+                        <i class="${icon}"></i>
+                        <h4>${subject}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-row">
+                            <span class="card-label">درجة العملي:</span>
+                            <span class="card-value">${practicalScore === 'غير موجود' ? 'لم تصدر النتائج بعد' : practicalScore}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">المجموع كتابة:</span>
+                            <span class="card-value">${numberToWords(practicalScore)}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">النتيجة:</span>
+                            <span class="card-value ${status.class}">${status.text}</span>
+                        </div>
+                    </div>
                 `;
-            });
+            } else {
+                const hasPractical = practicalSubjects.includes(subject);
+                card.innerHTML = `
+                    <div class="card-header">
+                        <i class="${icon}"></i>
+                        <h4>${subject}</h4>
+                    </div>
+                    <div class="card-body">
+                        ${hasPractical ? `
+                        <div class="card-row">
+                            <span class="card-label">درجة العملي:</span>
+                            <span class="card-value">${practicalScore === 'غير موجود' ? 'لم تصدر النتائج بعد' : practicalScore}</span>
+                        </div>
+                        ` : ''}
+                        <div class="card-row">
+                            <span class="card-label">درجة النظري:</span>
+                            <span class="card-value">${theoreticalScore === 0 ? 'لم تصدر النتائج بعد' : theoreticalScore}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">المجموع رقماً:</span>
+                            <span class="card-value">${totalScore === 0 ? 'لم تصدر النتائج بعد' : totalScore}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">المجموع كتابةً:</span>
+                            <span class="card-value">${numberToWords(totalScore)}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">النتيجة:</span>
+                            <span class="card-value ${status.class}">${status.text}</span>
+                        </div>
+                    </div>
+                `;
+            }
             
-            // Create print content
-            const printContent = `
-                <!DOCTYPE html>
-                <html dir="rtl" lang="ar">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>نتائج الطالب</title>
-                    <style>
-                        body {
-                            font-family: 'Hacen Tunisia', 'Tajawal', sans-serif;
-                            padding: 40px;
-                            direction: rtl;
-                        }
-                        .header {
-                            text-align: center;
-                            margin-bottom: 30px;
-                        }
-                        .header h1 {
-                            font-size: 24px;
-                            margin: 10px 0;
-                            color: #003d82;
-                        }
-                        .header h2 {
-                            font-size: 20px;
-                            margin: 8px 0;
-                            color: #0056b3;
-                        }
-                        .student-info {
-                            text-align: center;
-                            margin-bottom: 30px;
-                            font-size: 18px;
-                            font-weight: bold;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 30px;
-                        }
-                        th, td {
-                            border: 1px solid #ddd;
-                            padding: 12px;
-                            text-align: center;
-                        }
-                        th {
-                            background-color: #f2f2f2;
-                            font-weight: bold;
-                        }
-                        .average {
-                            text-align: center;
-                            font-size: 18px;
-                            font-weight: bold;
-                            margin-bottom: 30px;
-                        }
-                        .footer {
-                            position: absolute;
-                            left: 40px;
-                            bottom: 40px;
-                            font-weight: bold;
-                        }
-                        @media print {
-                            body { padding: 20px; }
-                            .footer { position: fixed; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1>جامعة حمص</h1>
-                        <h2>كلية الطب البشري</h2>
-                        <h2>السنة الثانية</h2>
-                        <h2>شؤون الطلاب</h2>
-                    </div>
-                    
-                    <div class="student-info">
-                        جدول بدرجات الطالب/ة ${student.name} ابن/بنت السيد ${student.fatherName} خلال السنة الثانية للدورة الفصلية الأولى وفق الآتي:
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>اسم المادة</th>
-                                <th>درجة العملي</th>
-                                <th>درجة النظري</th>
-                                <th>المجموع رقماً</th>
-                                <th>المجموع كتابةً</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${tableRows}
-                        </tbody>
-                    </table>
-                    
-                    <div class="average">
-                        معدل الفصل الدراسي الأول هو ${average}%
-                    </div>
-                    
-                    <div class="footer">
-                        (مكتب شؤون الطلاب)
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            // Open print window
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(printContent);
-            printWindow.document.close();
-            
-            // Wait for content to load, then print
-            printWindow.onload = function() {
-                setTimeout(() => {
-                    printWindow.print();
-                }, 500);
-            };
+            return card;
         }
 
+        // Get subject icon
         function getSubjectIcon(subject) {
             const icons = {
                 'الكيمياء الحيوية و البيولوجيا الجزيئية': 'fas fa-flask',
                 'علم النسج العام': 'fas fa-microscope',
-                'التشريح الوصفي 1': 'fas fa-bone',
+                'التشريح الوصفي 1': 'fas fa-user',
                 'علم النفس السلوكي': 'fas fa-brain',
                 'اللغة العربية': 'fas fa-language',
                 'اللغة الانكليزية 3': 'fas fa-globe'
@@ -2318,276 +1657,235 @@
             return icons[subject] || 'fas fa-book';
         }
 
-        function numberToWords(num) {
-            const units = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 
-                          'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 
-                          'ثمانية عشر', 'تسعة عشر'];
-            const tens = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
-            
-            if (num < 20) return units[num];
-            if (num < 100) {
-                const remainder = num % 10;
-                return (remainder > 0 ? units[remainder] + ' و ' : '') + tens[Math.floor(num / 10)];
+        // Get practical status
+        function getPracticalStatus(score) {
+            if (score === 'غير موجود' || score === 0) {
+                return { text: 'لم تصدر النتائج بعد', class: 'status-pending' };
+            } else if (score >= 12) {
+                return { text: 'ناجح', class: 'status-success' };
+            } else {
+                return { text: 'راسب', class: 'status-fail' };
             }
-            
-            return num.toString(); // For simplicity, return as string for larger numbers
         }
 
-        function showNoteDetails(subject) {
-            let title, content;
-            
-            switch(subject) {
-                case 'chemistry':
-                    title = 'الكيمياء الحيوية و البيولوجيا الجزيئية';
-                    content = `
-                        <h4>أولاً: موعد الامتحان</h4>
-                        <p>📌 الامتحان مثبّت يوم الثلاثاء ٢٧ / ١ / ٢٠٢٦</p>
-                        <p>سيتم نشر توزيع الطلاب، المواعيد، والتعليمات الامتحانية لاحقًا في إعلان مستقل.</p>
-                        
-                        <h4>ثانيًا: مقرر المادة المطلوب</h4>
-                        <p>📘 المقرر المعتمد للمادة:</p>
-                        <p>(رابط المقرر)</p>
-                        
-                        <h4>ثالثًا: المحاضرات المطلوبة بالتفصيل</h4>
-                        <h5>🔹 المطلوب للامتحان – قسم الكيمياء الحيوية:</h5>
-                        <ul>
-                            <li>سكريات 1</li>
-                            <li>سكريات 2</li>
-                            <li>الحموض الأمينية + الهيموغلوبين والميوغلوبين</li>
-                            <li>البروتينات</li>
-                            <li>شحوم 1</li>
-                            <li>شحوم 2</li>
-                            <li>شحوم 3</li>
-                            <li>كيمياء الأنسجة</li>
-                            <li>أنزيمات 1</li>
-                            <li>أنزيمات 2</li>
-                            <li>أنزيمات 3</li>
-                        </ul>
-                        
-                        <h5>❌ المحاضرات المحذوفة:</h5>
-                        <ul>
-                            <li>الماء و PH</li>
-                            <li>الأغشية الحيوية</li>
-                            <li>النكليوتيدات</li>
-                        </ul>
-                        
-                        <h5>🔹 المطلوب للامتحان – قسم البيولوجيا الجزيئية:</h5>
-                        <ol>
-                            <li>بنية الحموض النووية</li>
-                            <li>تعضي الدنا وتنسخه و التعبير الجيني</li>
-                            <li>تخليق الدنا وتحوّره</li>
-                        </ol>
-                        
-                        <p>❌ المحاضرة الرابعة (.الرنا الصغري والنكليوتيدات) محذوفة مبدئيًا</p>
-                        <p>📢 في حال طرأ أي تعديل على المطلوب أو المحذوف من المحاضرات، سيتم إعلامكم به فورًا.</p>
-                        
-                        <h4>رابعًا: مصادر الدراسة</h4>
-                        <p>📚 كل ما تحتاجونه من تسجيلات المحاضرات، السلايدات، والتفريغات متوفر على قناة الفريق العلمي</p>
-                        <p>ننصح بمتابعة القناة بشكل مستمر، لأن الفترة القادمة سيكون فيها محتوى مكثف ومفيد جدًا يخص المادة.</p>
-                        
-                        <h4>●نصائح مهمة للدراسة (خاصة وأنه باقي أقل من أسبوعين):</h4>
-                        <ul>
-                            <li>لا تؤجلوا البدء، وابدؤوا من الآن بتنظيم المحاضرات وتقسيمها على أيام.</li>
-                            <li>ركّزوا على الفهم قبل الحفظ، خصوصًا في السكريات، الشحوم، والأنزيمات.</li>
-                            <li>حاولوا ربط المحاضرات ببعضها حتى تكتمل الصورة عندكم.</li>
-                            <li>خصصوا وقتًا للمراجعة النهائية وعدم الاكتفاء بقراءة المحاضرة مرة واحدة.</li>
-                            <li>أي نقطة غير واضحة، اسألوا عنها مباشرة ولا تتركوها تتراكم.</li>
-                        </ul>
-                    `;
-                    break;
-                    
-                case 'arabic':
-                    title = 'اللغة العربية';
-                    content = `
-                        <h4>أولاً: موعد الامتحان</h4>
-                        <p>📌 امتحان اللغة العربية مثبّت يوم الثلاثاء ٣ / ٢ / ٢٠٢٦</p>
-                        <p>سيتم لاحقًا نشر أي تعليمات امتحانية إضافية.</p>
-                        
-                        <h4>ثانيًا: مقرر المادة موجود على قناه الفريق</h4>
-                        <p>📘 والمطلوب منه فقط المباحث التالية:</p>
-                        
-                        <h5>🔹 مباحث النحو والصرف والإملاء:</h5>
-                        <p>• جميع المباحث ما عدا الفاعل</p>
-                        <p>• و نائب الفاعل و الجار و المجرور</p>
-                        
-                        <h5>🔹 الأخطاء الشائعة:</h5>
-                        <p>من 1 إلى 50</p>
-                        
-                        <h5>🔹 النصوص المختارة (المطلوب الأبيات السبعة الأولى من كل نص):</h5>
-                        <ul>
-                            <li>نسور الفداء – زكي قنصل</li>
-                            <li>أمتي – عمر أبو ريشة</li>
-                            <li>عانقي النور – عبدالله الصالح العثيمين</li>
-                            <li>يا تونس الخضراء – نزار قباني</li>
-                            <li>سنعود – عبد الكريم الكرمي</li>
-                            <li>عاش الفداء – محمد عبده غانم</li>
-                            <li>عاشق دمشقي – نزار قباني</li>
-                            <li>ضفاف بردى – الأخطل الصغير</li>
-                        </ul>
-                        
-                        <h4>●ملاحظات مهمة:</h4>
-                        <ul>
-                            <li>الدورات ضرورية في هذه مادة، ولا يمكن الاستغناء عنها، خاصة لفهم طريقة الأسئلة.</li>
-                            <li>التركيز على تطبيق القواعد وليس حفظها فقط، ودرّبوا أنفسكم على الأسئلة.</li>
-                            <li>لا تتركوا الأخطاء الشائعة للنهاية، فهي سهلة وتحتاج مراجعة مركّزة.</li>
-                        </ul>
-                    `;
-                    break;
-                    
-                case 'english':
-                    title = 'اللغة الانكليزية';
-                    content = `
-                        <h4>تفاصيل مادة اللغة الإنكليزية 3 من حيث المقرر والملفات المطلوبة:</h4>
-                        <p>يوم الأحد بتاريخ 1 / 2 الساعة 10:30 وفق التوزيع</p>
-                        
-                        <h4>أولاً:</h4>
-                        <p>📘 المقرر المطلوب</p>
-                        <p>❌ وتم حذف الوحدة 19 (The Eye) من المقرر.</p>
-                        <p>📂 ملف حلول تمارين المقرر 🔗</p>
-                        
-                        <h4>• 📎 الملفات الملحقة:</h4>
-                        <ul>
-                            <li>ملف اللواحق والبوادئ (Prefixes & Suffixes)</li>
-                            <li>ملف القواعد</li>
-                        </ul>
-                        
-                        <p>📌 مع التنويه أن القواعد الأساسية المأخوذة في السنوات السابقة مطلوبة أيضًا ويجب مراجعتها جيدًا.</p>
-                        
-                        <h4>ثالثًا: النصوص</h4>
-                        <p>🔹 نص الامتحان سيكون خارجيًا بالكامل.</p>
-                        <p>🔹 المطلوب نظريًا للاطلاع فقط:</p>
-                        <p>جميع النصوص الموجودة في المقرر</p>
-                        <p>بالإضافة إلى نصين قامت الدكتورة بإعطائهما خلال المحاضرة</p>
-                        
-                        <p>📌 الهدف من دراسة النصوص هو التمرّن على الفهم، المفردات، وطريقة الأسئلة، وليس حفظ نص محدد.</p>
-                        <p>المقررات موجودة على قناه الفريق العلمي</p>
-                    `;
-                    break;
-                    
-                case 'histology':
-                    title = 'النسج العام';
-                    content = `
-                        <h4>ضمن متابعة التنظيم الامتحاني للمواد، نضع بين أيديكم تفاصيل مادة النسج العام من حيث المباحث المطلوبة والمحذوفة، وذلك لمساعدتكم على ترتيب الدراسة خلال الفترة القادمة.</h4>
-                        
-                        <h4>أولاً: الامتحان مثبت يوم الأربعاء بتاريخ ١١ - ٢ -٢٠٢٦ و تنشر لاحقا بقية التفاصيل الامتحانية.</h4>
-                        
-                        <h4>ثانياً: المقرر المعتمد للمادة</h4>
-                        <p>📘 مقرر النسج العام موجود على قناه الفريق العلمي</p>
-                        <p>والمطلوب المباحث التالية:</p>
-                        
-                        <ul>
-                            <li>🔹 مدخل إلى علم النسج</li>
-                            <li>🔹 النسيج الظهاري</li>
-                            <li>🔹 النسيج الضام</li>
-                            <li>🔹 النسج الدعامية</li>
-                            <li>🔹 النسيج العضلي</li>
-                            <li>🔹 النسيج العصبي</li>
-                            <li>🔹 النسيج الغدي</li>
-                            <li>🔹 المستقبلات</li>
-                        </ul>
-                        
-                        <h4>●●المحذوفات ●●</h4>
-                        <ul>
-                            <li>❌ النسيج الدموي</li>
-                            <li>❌ فقرة الأطوار ضمن محاضرة النسيج العظمي:</li>
-                            <li>المطلوب منها تعداد فقط دون شرح</li>
-                        </ul>
-                    `;
-                    break;
-                    
-                case 'psychology':
-                    title = 'علم النفس';
-                    content = `
-                        <h4>السلام عليكم و رحمة الله و بركاته،</h4>
-                        <p>أسوةً بباقي المواد، تفاصيل مادة علم النفس السلوكي....</p>
-                        
-                        <p>🗓 الموعد: يوم الخميس 19 / 2</p>
-                        <p>⏰ الساعة: 10:30</p>
-                        
-                        <h4>📚 المقرر المطلوب:</h4>
-                        <p>🔹 أجزاء من المقرر القديم</p>
-                        <p>🔹 محاضرات إضافية من كتاب Oxford في الطب النفسي</p>
-                        
-                        <h4>📖 المقرر القديم (علم النفس السلوكي)موجود على قناه الفريق العلمي</h4>
-                        <p>المطلوب منه المواضيع التالية:</p>
-                        <ul>
-                            <li>• من البداية حتى صفحة 77 (الشخصيّة).</li>
-                            <li>• فصل الدافعيّة والتعلّم من صفحة 108 حتى 117 (بداية الذكاء).</li>
-                            <li>• فصل الذكاء: أنواع الذكاء عند غاردنر من صفحة 133 إلى 135.</li>
-                            <li>• فصل الذاكرة والنسيان والتعلّم من صفحة 158 إلى 179 (حتى فقرة النسيان والتعلّم).</li>
-                            <li>• فصل التفكير من صفحة 196 حتى نهاية المقرّر.</li>
-                        </ul>
-                        
-                        <h4>● المحاضرات الخارجية</h4>
-                        <ul>
-                            <li>• محاضرة علم النفس المعرفي.</li>
-                            <li>• محاضرة المسبّبات المرضيّة.</li>
-                            <li>• محاضرة الشخصيّة.</li>
-                            <li>• محاضرة (إريكسون – بياجيه – التعلّق).</li>
-                            <li>• المحاضرة الأخيرة (مواضيع متنوّعة).</li>
-                        </ul>
-                    `;
-                    break;
+        // Get theoretical status
+        function getTheoreticalStatus(totalScore, theoreticalScore) {
+            if (theoreticalScore === 0) {
+                return { text: 'لم تصدر النتائج بعد', class: 'status-pending' };
+            } else if (totalScore >= 60) {
+                return { text: 'ناجح', class: 'status-success' };
+            } else {
+                return { text: 'راسب', class: 'status-fail' };
             }
-            
-            modalTitle.textContent = title;
-            modalBody.innerHTML = content;
-            modal.classList.add('active');
         }
 
-        function showNewsDetails(newsId) {
-            let title, content;
+        // Calculate semester statistics
+        function calculateSemesterStats(student) {
+            let totalScore = 0;
+            let totalMaxScore = 0;
+            let failedCount = 0;
             
-            switch(newsId) {
-                case 'news1':
-                    title = 'صدور نتائج مادة الكيمياء العملي';
-                    content = `
-                        <p>تم اعلان نتائج مادة الكيمياء العملي لطلاب السنة الثانية في كلية الطب البشري.</p>
-                        <p>للإطلاع على النتائج، يمكنكم البحث عن نتائجكم باستخدام الرقم الجامعي أو الاسم في صفحة النتائج.</p>
-                        <button class="btn" onclick="navigateToResults()">
-                            <i class="fas fa-chart-line"></i> الانتقال إلى صفحة النتائج
-                        </button>
-                    `;
-                    break;
+            const subjects = Object.keys(student.scores);
+            
+            subjects.forEach(subject => {
+                const scores = student.scores[subject];
+                const practicalScore = scores.practical || 0;
+                const theoreticalScore = scores.theoretical || 0;
+                
+                // Only count subjects with issued results
+                if (practicalScore !== 'غير موجود' && (practicalScore > 0 || theoreticalScore > 0)) {
+                    const subjectTotal = practicalScore + theoreticalScore;
+                    totalScore += subjectTotal;
                     
-                case 'news2':
-                    title = 'الأرقام الجامعية لطلاب الموازي';
-                    content = `
-                        <p>قائمة الأرقام الجامعية لطلاب السنة الثانية في كلية الطب البشري.</p>
-                        <p>للإطلاع على الأرقام، يمكنكم تحميل الملف من الرابط أدناه:</p>
-                        <a href="88.pdf" class="download-btn" download>
-                            <i class="fas fa-download"></i> تحميل قائمة الأرقام الجامعية
-                        </a>
-                    `;
-                    break;
-            }
-            
-            modalTitle.textContent = title;
-            modalBody.innerHTML = content;
-            modal.classList.add('active');
-        }
-
-        function navigateToResults() {
-            modal.classList.remove('active');
-            
-            // Show loading screen
-            showLoading();
-            
-            // Hide all pages
-            pageSections.forEach(section => {
-                section.classList.remove('active');
+                    // Determine max score for this subject
+                    if (practicalSubjects.includes(subject)) {
+                        totalMaxScore += 100; // Practical + Theoretical
+                        if (subjectTotal < 60) failedCount++;
+                    } else {
+                        totalMaxScore += 100; // Theoretical only
+                        if (theoreticalScore < 60) failedCount++;
+                    }
+                }
             });
             
-            // Show results page
-            document.getElementById('resultsPage').classList.add('active');
+            const average = totalMaxScore > 0 ? Math.round((totalScore / totalMaxScore) * 100) : 0;
             
-            // Hide loading screen after a short delay
-            setTimeout(hideLoading, 500);
+            return { average, failedCount };
         }
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            hideLoading();
+        // Convert number to words (Arabic)
+        function numberToWords(num) {
+            if (typeof num !== 'number' || num === 0) return 'صفر';
+            
+            const ones = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
+            const tens = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+            const teens = ['عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+            const hundreds = ['', 'مئة', 'مئتان', 'ثلاثمئة', 'أربعمئة', 'خمسمئة', 'ستمئة', 'سبعمئة', 'ثمانمئة', 'تسعمئة'];
+            
+            if (num < 10) return ones[num];
+            if (num < 20) return teens[num - 10];
+            if (num < 100) {
+                const one = num % 10;
+                const ten = Math.floor(num / 10);
+                return one > 0 ? ones[one] + ' و ' + tens[ten] : tens[ten];
+            }
+            if (num < 1000) {
+                const one = num % 100;
+                const hundred = Math.floor(num / 100);
+                return one > 0 ? hundreds[hundred] + ' و ' + numberToWords(one) : hundreds[hundred];
+            }
+            
+            return num.toString();
+        }
+
+        // Print results
+        function printResults() {
+            if (!currentStudent) return;
+            
+            // Update print content
+            document.getElementById('printStudentName').textContent = currentStudent.name;
+            document.getElementById('printFatherName').textContent = currentStudent.fatherName;
+            
+            // Generate table rows
+            const printTableBody = document.getElementById('printTableBody');
+            printTableBody.innerHTML = '';
+            
+            const subjects = [
+                'الكيمياء الحيوية و البيولوجيا الجزيئية',
+                'علم النسج العام',
+                'التشريح الوصفي 1',
+                'علم النفس السلوكي',
+                'اللغة العربية',
+                'اللغة الانكليزية 3'
+            ];
+            
+            subjects.forEach(subject => {
+                const scores = currentStudent.scores[subject] || {};
+                const practicalScore = scores.practical || 0;
+                const theoreticalScore = scores.theoretical || 0;
+                const totalScore = practicalScore + theoreticalScore;
+                const status = getTheoreticalStatus(totalScore, theoreticalScore);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject}</td>
+                    <td>${practicalScore === 'غير موجود' ? 'لم تصدر النتائج بعد' : practicalScore}</td>
+                    <td>${theoreticalScore === 0 ? 'لم تصدر النتائج بعد' : theoreticalScore}</td>
+                    <td>${totalScore === 0 ? 'لم تصدر النتائج بعد' : totalScore}</td>
+                    <td>${numberToWords(totalScore)}</td>
+                    <td class="${status.class}">${status.text}</td>
+                `;
+                printTableBody.appendChild(row);
+            });
+            
+            // Update average and date
+            const { average } = calculateSemesterStats(currentStudent);
+            document.getElementById('printAverage').textContent = average;
+            
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}`;
+            document.getElementById('printDate').textContent = dateStr;
+            
+            // Print
+            const printContent = document.getElementById('printContainer').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            // Re-initialize after print
+            location.reload();
+        }
+
+        // Show news detail
+        function showNewsDetail(newsId) {
+            const newsModalTitle = document.getElementById('newsModalTitle');
+            const newsModalBody = document.getElementById('newsModalBody');
+            
+            if (newsId === 0) {
+                newsModalTitle.textContent = 'صدور نتائج مادة الكيمياء العملي';
+                newsModalBody.innerHTML = `
+                    <p>تم اعلان نتائج مادة الكيمياء العملي لطلاب السنة الثانية في كلية الطب البشري.</p>
+                    <p>للاطلاع على النتائج، يرجى البحث عن نتائجك في صفحة النتائج.</p>
+                    <button class="btn" onclick="showPage('results'); newsModal.classList.remove('active');">الذهاب إلى صفحة النتائج</button>
+                `;
+            } else if (newsId === 1) {
+                newsModalTitle.textContent = 'الأرقام الجامعية لطلاب الموازي';
+                newsModalBody.innerHTML = `
+                    <p>قائمة الأرقام الجامعية لطلاب السنة الثانية في كلية الطب البشري.</p>
+                    <p>للاطلاع على القائمة، يرجى تحميل الملف أدناه:</p>
+                    <a href="88.pdf" class="download-btn" target="_blank">
+                        <i class="fas fa-download"></i> تحميل قائمة الأرقام الجامعية
+                    </a>
+                `;
+            }
+            
+            newsModal.classList.add('active');
+        }
+
+        // Toggle note
+        function toggleNote(element) {
+            element.classList.toggle('active');
+            const content = element.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        // Show loading
+        function showLoading() {
+            loadingOverlay.classList.add('active');
+        }
+
+        // Hide loading
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+
+        // Show message
+        function showMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: var(--secondary-color);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 4px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                z-index: 3000;
+                animation: fadeIn 0.3s;
+            `;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 300);
+            }, 3000);
+        }
+
+        // Load student data from students.js
+        // This would be replaced with actual loading from the students.js file
+        // For now, we'll simulate it with the provided data
+        window.addEventListener('load', () => {
+            // In a real application, you would load the student data from students.js
+            // For this example, we'll assume the data is already available in the studentData variable
+            // You would need to include the students.js file in your HTML or load it via fetch
+            
+            // Example of how you might load it:
+            /*
+            fetch('students.js')
+                .then(response => response.text())
+                .then(text => {
+                    // Execute the JavaScript code to get the studentData
+                    eval(text);
+                })
+                .catch(error => console.error('Error loading student data:', error));
+            */
         });
     </script>
 </body>
