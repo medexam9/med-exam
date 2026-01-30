@@ -65,14 +65,27 @@ const countFailedSubjects = (student) => {
             failedCount++;
         }
     });
-    return failedCount;
+    return failedSubjects;
 };
 
-// دالة تحديد تقدير المواد النظرية (تستخدم للمجموع)
+// دالة تحديد تقدير المواد العملية
+const getPracticalGrade = (score) => {
+    if (score >= 27) {
+        return { text: 'ممتاز', class: 'grade-excellent' };
+    } else if (score >= 23) {
+        return { text: 'جيد جداً', class: 'grade-very-good' };
+    } else if (score >= 18) {
+        return { text: 'متوسط', class: 'grade-good' };
+    } else if (score >= 12) {
+        return { text: 'سيئ', class: 'grade-poor' };
+    } else {
+        return { text: 'راسب', class: 'grade-fail' };
+    }
+};
+
+// دالة تحديد تقدير المواد النظرية (للمجموع الكلي)
 const getTheoreticalGrade = (score) => {
-    if (score === 0) {
-        return { text: '-', class: '' };
-    } else if (score >= 96) {
+    if (score >= 96) {
         return { text: 'ممتاز جداً', class: 'grade-excellent' };
     } else if (score >= 85) {
         return { text: 'ممتاز', class: 'grade-very-good' };
@@ -98,7 +111,7 @@ const getSubjectIcon = (subjectName) => {
     return 'fa-file-alt'; // أيقونة افتراضية
 };
 
-// عرض النتائج باستخدام البطاقات
+// عرض النتائج باستخدام البطاقات المنفصلة
 const displayResults = (student) => {
     resultsContainer.innerHTML = '';
 
@@ -108,19 +121,18 @@ const displayResults = (student) => {
     }
 
     const subjectsWithPractical = ['الكيمياء الحيوية و البيولوجيا الجزيئية', 'علم النسج العام', 'التشريح الوصفي 1'];
-    let subjectsCardsHTML = '';
+    let practicalCardsHTML = '';
+    let theoreticalCardsHTML = '';
+    let hasAnyTheoreticalGrades = false;
 
-    // بناء بطاقات المواد
-    Object.keys(student.scores).forEach(subject => {
+    // --- بناء بطاقات القسم العملي ---
+    subjectsWithPractical.forEach(subject => {
         const score = student.scores[subject];
         const practicalScore = (score.practical === "غير موجود") ? 0 : (score.practical || 0);
-        const theoreticalScore = score.theoretical || 0;
-        const total = practicalScore + theoreticalScore;
         const icon = getSubjectIcon(subject);
 
-        // حالة عدم صدور الدرجة
-        if (total === 0) {
-            subjectsCardsHTML += `
+        if (practicalScore === 0) {
+            practicalCardsHTML += `
                 <div class="subject-card border-pending">
                     <div class="subject-card-icon">
                         <i class="fas ${icon}"></i>
@@ -131,19 +143,14 @@ const displayResults = (student) => {
                     </div>
                 </div>
             `;
-        } else { // حالة صدور الدرجة
-            const grade = getTheoreticalGrade(total);
-            const result = total >= 60;
+        } else {
+            const grade = getPracticalGrade(practicalScore);
+            const result = practicalScore >= 12;
             const resultText = result ? 'ناجح' : 'راسب';
             const resultClass = result ? 'result-pass' : 'result-fail';
             const borderClass = result ? 'border-pass' : 'border-fail';
-            
-            let practicalDisplay = '-';
-            if (subjectsWithPractical.includes(subject)) {
-                practicalDisplay = score.practical;
-            }
 
-            subjectsCardsHTML += `
+            practicalCardsHTML += `
                 <div class="subject-card ${borderClass}">
                     <div class="subject-card-icon">
                         <i class="fas ${icon}"></i>
@@ -153,8 +160,70 @@ const displayResults = (student) => {
                         <div class="subject-details">
                             <div class="detail-row">
                                 <span class="detail-label">درجة العملي:</span>
-                                <span class="detail-value">${practicalDisplay}</span>
+                                <span class="detail-value">${practicalScore}</span>
                             </div>
+                            <div class="detail-row">
+                                <span class="detail-label">درجة العملي كتابةً:</span>
+                                <span class="detail-value">${numberToWords(practicalScore)}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">النتيجة:</span>
+                                <span class="detail-value ${resultClass}">${resultText}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">التقدير:</span>
+                                <span class="detail-value ${grade.class}">${grade.text}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    // --- بناء بطاقات القسم النظري ---
+    Object.keys(student.scores).forEach(subject => {
+        // تجاهل المواد التي لها قسم عملي فقط
+        if (subjectsWithPractical.includes(subject)) {
+            return;
+        }
+
+        const score = student.scores[subject];
+        const theoreticalScore = score.theoretical || 0;
+        const total = theoreticalScore; // للمواد النظرية فقط، المجموع هو درجة النظري
+        const icon = getSubjectIcon(subject);
+
+        if (total > 0) {
+            hasAnyTheoreticalGrades = true;
+        }
+
+        if (total === 0) {
+            theoreticalCardsHTML += `
+                <div class="subject-card border-pending">
+                    <div class="subject-card-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="subject-card-content">
+                        <h5 class="subject-name">${subject}</h5>
+                        <p class="no-grades-message"><i class="fas fa-clock"></i> لم تصدر الدرجات بعد</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            const grade = getTheoreticalGrade(total);
+            const result = total >= 60;
+            const resultText = result ? 'ناجح' : 'راسب';
+            const resultClass = result ? 'result-pass' : 'result-fail';
+            const borderClass = result ? 'border-pass' : 'border-fail';
+
+            theoreticalCardsHTML += `
+                <div class="subject-card ${borderClass}">
+                    <div class="subject-card-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="subject-card-content">
+                        <h5 class="subject-name">${subject}</h5>
+                        <div class="subject-details">
                             <div class="detail-row">
                                 <span class="detail-label">درجة النظري:</span>
                                 <span class="detail-value">${theoreticalScore}</span>
@@ -164,7 +233,7 @@ const displayResults = (student) => {
                                 <span class="detail-value">${total}</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">المجموع كتابة:</span>
+                                <span class="detail-label">المجموع كتابةً:</span>
                                 <span class="detail-value">${numberToWords(total)}</span>
                             </div>
                             <div class="detail-row">
@@ -191,9 +260,21 @@ const displayResults = (student) => {
             <p>الرقم الجامعي: ${student.uniId} | الرقم الامتحاني: ${student.examId}</p>
         </div>
 
-        <div class="subjects-cards-container">
-            ${subjectsCardsHTML}
+        <div class="results-section">
+            <h4 class="section-title"><i class="fas fa-flask"></i> القسم العملي</h4>
+            <div class="subjects-cards-container">
+                ${practicalCardsHTML}
+            </div>
         </div>
+
+        ${hasAnyTheoreticalGrades ? `
+        <div class="results-section">
+            <h4 class="section-title"><i class="fas fa-book-open"></i> القسم النظري</h4>
+            <div class="subjects-cards-container">
+                ${theoreticalCardsHTML}
+            </div>
+        </div>
+        ` : ''}
 
         <div class="summary-card">
             <h4><i class="fas fa-graduation-cap"></i> بطاقة الفصل الأول</h4>
